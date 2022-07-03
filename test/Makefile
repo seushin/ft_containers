@@ -1,5 +1,6 @@
 NAME := unit-test
 
+# criterion directory
 D_CRIT := $(wildcard $(shell brew --prefix)/Cellar/criterion/*)
 
 D_SRC := ./
@@ -10,6 +11,10 @@ SRC := vector/constructor.cpp
 SRC += vector/destructor.cpp
 
 OBJ := $(addprefix $(D_OBJ)/, $(SRC:.cpp=.o))
+OBJ_SUBDIR := $(addprefix $(D_OBJ)/, vector)
+
+DEP := $(OBJ:.o=.d)
+
 INC := -I$(D_INC)
 INC += -I$(D_CRIT)/include/
 
@@ -24,7 +29,7 @@ endif
 
 .PHONY: test
 test: all
-	./$(NAME)
+	./$(NAME) --jobs 1 --verbose=0
 
 .PHONY: all
 all: $(NAME)
@@ -32,16 +37,13 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	$(CXX) $(CXXFLAGS) $(INC) -o $@ $(OBJ) $(LIB)
 
-$(OBJ): | $(dir $(OBJ))
+$(OBJ): | $(OBJ_SUBDIR)
 
-$(dir $(OBJ)):
-	@mkdir -p $(dir $(OBJ))
-
-$(D_OBJ):
-	@mkdir -p $(D_OBJ)
+$(OBJ_SUBDIR):
+	@mkdir -p $@
 
 $(D_OBJ)/%.o: $(D_SRC)/%.cpp
-	$(CXX) $(CXXFLAGS) $(INC) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -MMD $(INC) -c $< -o $@
 
 .PHONY: clean
 clean:
@@ -62,3 +64,5 @@ lint:
 compile_flags:
 	$(foreach flag,$(INC),$(shell echo "$(flag)" >> compile_flags.txt;))
 	@echo "done"
+
+-include $(DEP)
