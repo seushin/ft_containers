@@ -1,6 +1,6 @@
-test/unit-test
-
 *.o
 *.a
+
+obj/
 
 .DS_Store

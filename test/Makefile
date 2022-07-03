@@ -60,9 +60,13 @@ re: fclean all
 lint:
 	find $(D_SRC) $(D_INC) -name '*.cpp' -o -name '*.hpp' | xargs clang-format -i
 
-.PHONY: compile_flags
-compile_flags:
-	$(foreach flag,$(INC),$(shell echo "$(flag)" >> compile_flags.txt;))
+FLAG_FILE := compile_flags.txt
+append_flags = $(foreach flag,$(1),$(shell echo "$(flag)" >> $(FLAG_FILE);))
+
+.PHONY: $(FLAG_FILE)
+$(FLAG_FILE):
+	$(call append_flags,$(INC))
+	$(call append_flags,$(CXXFLAGS))
 	@echo "done"
 
 -include $(DEP)
