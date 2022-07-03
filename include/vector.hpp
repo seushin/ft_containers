@@ -3,6 +3,7 @@
 
 #include "iterator/iterator_traits.hpp"
 #include <memory>
+#include <stdexcept>
 
 namespace ft
 {
@@ -34,22 +35,34 @@ public:
 	~vector();
 
 	// iterators
-	/*
 	iterator begin();
 	const_iterator begin() const;
 	iterator end();
 	const_iterator end() const;
-	*/
+
+	// element access
+	reference operator[](size_type n);
+	const_reference operator[](size_type n) const;
 
 	// capacity
 	size_type size() const;
 	size_type max_size() const;
+	size_type capacity() const;
+
+	// modifiers
+	void push_back(const value_type &val);
 
 private:
 	iterator begin_;
 	iterator end_;
 	iterator end_cap_;
 	allocator_type alloc_;
+
+private:
+	void allocate_(size_type n);
+	void deallocate_();
+	void construct_(size_type n);
+	void construct_(size_type n, const_reference val);
 };
 
 template<class T, class Allocator>
@@ -63,11 +76,23 @@ vector<T, Allocator>::vector(const allocator_type &alloc)
 
 template<class T, class Allocator>
 vector<T, Allocator>::vector(size_type n)
-{}
+{
+	if (n > 0)
+	{
+		allocate_(n);
+		construct_(n);
+	}
+}
 
 template<class T, class Allocator>
 vector<T, Allocator>::vector(size_type n, const value_type &val)
-{}
+{
+	if (n > 0)
+	{
+		allocate_(n);
+		construct_(n, val);
+	}
+}
 
 template<class T, class Allocator>
 vector<T, Allocator>::vector(const vector &other)
@@ -83,18 +108,96 @@ template<class T, class Allocator>
 vector<T, Allocator>::~vector()
 {}
 
+// iterators
+template<class T, class Allocator>
+typename vector<T, Allocator>::iterator vector<T, Allocator>::begin()
+{
+	return (begin_);
+}
+
+template<class T, class Allocator>
+typename vector<T, Allocator>::iterator vector<T, Allocator>::end()
+{
+	return (end_);
+}
+
+// element access
+template<class T, class Allocator>
+typename vector<T, Allocator>::reference
+vector<T, Allocator>::operator[](size_type n)
+{
+	// FIXME
+
+	return (begin_[n]);
+}
+
+// capacity
 template<class T, class Allocator>
 typename vector<T, Allocator>::size_type vector<T, Allocator>::size() const
 {
 	// FIXME
-	return (-1);
+	return (end_ - begin_);
 }
 
 template<class T, class Allocator>
 typename vector<T, Allocator>::size_type vector<T, Allocator>::max_size() const
 {
+	return (alloc_.max_size());
+}
+
+template<class T, class Allocator>
+typename vector<T, Allocator>::size_type vector<T, Allocator>::capacity() const
+{
+	return (0);
+}
+
+// modifiers
+template<class T, class Allocator>
+void vector<T, Allocator>::push_back(const value_type &val)
+{
 	// FIXME
-	return (-1);
+	// allocate & insert element
+}
+
+// private member function
+template<class T, class Allocator>
+void vector<T, Allocator>::allocate_(size_type n)
+{
+	if (n > max_size())
+		throw std::length_error("ft::vector");
+	begin_ = end_ = alloc_.allocate(n);
+	end_cap_ = end_ + n;
+}
+
+template<class T, class Allocator>
+void vector<T, Allocator>::deallocate_()
+{
+	if (begin_ != 0)
+	{
+		// destroy
+		alloc_.deallocate(begin_, capacity());
+	}
+	begin_ = end_ = end_cap_ = 0;
+}
+
+template<class T, class Allocator>
+void vector<T, Allocator>::construct_(size_type n)
+{
+	const_pointer new_end = end_ + n;
+	for (pointer &pos = end_; end_ != new_end; ++pos)
+	{
+		alloc_.construct(pos);
+	}
+}
+
+template<class T, class Allocator>
+void vector<T, Allocator>::construct_(size_type n, const_reference val)
+{
+	const_pointer new_end = end_ + n;
+	for (pointer &pos = end_; end_ != new_end; ++pos)
+	{
+		alloc_.construct(pos, val);
+	}
 }
 
 } // namespace ft
