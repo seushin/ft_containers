@@ -2,10 +2,8 @@
 #include <criterion/criterion.h>
 #include <criterion/logging.h>
 #include <criterion/new/assert.h>
-#include <cstddef>
 #include <iterator>
 #include <memory>
-#include <stdexcept>
 #include <vector>
 
 Test(vector, default_construct)
@@ -15,6 +13,8 @@ Test(vector, default_construct)
 
 	criterion::logging::info << "std::vector default construct: size=" << origin.size()
 							 << " capacity=" << origin.capacity() << std::flush;
+	criterion::logging::info << "ft::vector default construct: size=" << v.size()
+							 << " capacity=" << v.capacity() << std::flush;
 	cr_expect_eq(v.size(), 0);
 	cr_expect_eq(v.capacity(), 0);
 	cr_expect_eq(v.begin(), v.end());
@@ -26,8 +26,12 @@ Test(vector, fill_constructor)
 	const int val = 42;
 	ft::vector<int> v(n, val);
 	ft::vector<int> v_default_val(n);
+	std::vector<int> origin(n);
 
-	criterion::logging::info << "distance=" << std::distance(v.begin(), v.end()) << std::flush;
+	criterion::logging::info << "std::vector construct with size: size=" << origin.size()
+							 << " capacity=" << origin.capacity() << std::flush;
+	criterion::logging::info << "ft::vector construct with size: size=" << v_default_val.size()
+							 << " capacity=" << v_default_val.capacity() << std::flush;
 	cr_expect_eq(v.size(), n);
 	cr_expect_eq(v_default_val.size(), n);
 	cr_expect_eq(v[n - 1], val);
@@ -42,8 +46,14 @@ Test(vector, copy_construct)
 	v.push_back(42);
 
 	ft::vector<int> copy(v);
+
 	cr_expect_eq(v.size(), copy.size());
+	cr_expect_eq(v.capacity(), copy.capacity());
+
 	cr_expect_eq(v[1], copy[1]);
+
+	v[1] = 0;
+	cr_expect_neq(v[1], copy[1]);
 }
 
 Test(vector, range_constructor)

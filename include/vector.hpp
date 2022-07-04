@@ -2,12 +2,12 @@
 #define VECTOR_HPP
 
 #include "iterator/iterator_traits.hpp"
+#include <algorithm>
 #include <memory>
 #include <stdexcept>
 
 namespace ft
 {
-
 template<class T, class Allocator = std::allocator<T> >
 class vector
 {
@@ -58,11 +58,13 @@ private:
 	iterator end_cap_;
 	allocator_type alloc_;
 
+	// util functions
 private:
 	void allocate_(size_type n);
 	void deallocate_();
-	void construct_(size_type n);
-	void construct_(size_type n, const_reference val);
+	void construct_at_end_(size_type n);
+	void construct_at_end_(size_type n, const_reference val);
+	size_type recommend_size_(size_type new_size) const;
 };
 
 template<class T, class Allocator>
@@ -80,7 +82,7 @@ vector<T, Allocator>::vector(size_type n)
 	if (n > 0)
 	{
 		allocate_(n);
-		construct_(n);
+		construct_at_end_(n);
 	}
 }
 
@@ -90,17 +92,22 @@ vector<T, Allocator>::vector(size_type n, const value_type &val)
 	if (n > 0)
 	{
 		allocate_(n);
-		construct_(n, val);
+		construct_at_end_(n, val);
 	}
 }
 
 template<class T, class Allocator>
 vector<T, Allocator>::vector(const vector &other)
-{}
+{
+	*this = other;
+}
 
 template<class T, class Allocator>
 vector<T, Allocator> &vector<T, Allocator>::operator=(const vector &rhs)
 {
+	// deallocate + allocate
+
+	alloc_ = rhs.alloc_;
 	return (*this);
 }
 
@@ -116,18 +123,33 @@ typename vector<T, Allocator>::iterator vector<T, Allocator>::begin()
 }
 
 template<class T, class Allocator>
+typename vector<T, Allocator>::const_iterator vector<T, Allocator>::begin() const
+{
+	return (begin_);
+}
+
+template<class T, class Allocator>
 typename vector<T, Allocator>::iterator vector<T, Allocator>::end()
+{
+	return (end_);
+}
+
+template<class T, class Allocator>
+typename vector<T, Allocator>::const_iterator vector<T, Allocator>::end() const
 {
 	return (end_);
 }
 
 // element access
 template<class T, class Allocator>
-typename vector<T, Allocator>::reference
-vector<T, Allocator>::operator[](size_type n)
+typename vector<T, Allocator>::reference vector<T, Allocator>::operator[](size_type n)
 {
-	// FIXME
+	return (begin_[n]);
+}
 
+template<class T, class Allocator>
+typename vector<T, Allocator>::const_reference vector<T, Allocator>::operator[](size_type n) const
+{
 	return (begin_[n]);
 }
 
@@ -135,8 +157,7 @@ vector<T, Allocator>::operator[](size_type n)
 template<class T, class Allocator>
 typename vector<T, Allocator>::size_type vector<T, Allocator>::size() const
 {
-	// FIXME
-	return (end_ - begin_);
+	return (static_cast<size_type>(end_ - begin_));
 }
 
 template<class T, class Allocator>
@@ -148,7 +169,7 @@ typename vector<T, Allocator>::size_type vector<T, Allocator>::max_size() const
 template<class T, class Allocator>
 typename vector<T, Allocator>::size_type vector<T, Allocator>::capacity() const
 {
-	return (0);
+	return (static_cast<size_type>(end_cap_ - begin_));
 }
 
 // modifiers
@@ -174,14 +195,14 @@ void vector<T, Allocator>::deallocate_()
 {
 	if (begin_ != 0)
 	{
-		// destroy
+		// FIX: destroy
 		alloc_.deallocate(begin_, capacity());
 	}
 	begin_ = end_ = end_cap_ = 0;
 }
 
 template<class T, class Allocator>
-void vector<T, Allocator>::construct_(size_type n)
+void vector<T, Allocator>::construct_at_end_(size_type n)
 {
 	const_pointer new_end = end_ + n;
 	for (pointer &pos = end_; end_ != new_end; ++pos)
@@ -191,13 +212,27 @@ void vector<T, Allocator>::construct_(size_type n)
 }
 
 template<class T, class Allocator>
-void vector<T, Allocator>::construct_(size_type n, const_reference val)
+void vector<T, Allocator>::construct_at_end_(size_type n, const_reference val)
 {
 	const_pointer new_end = end_ + n;
 	for (pointer &pos = end_; end_ != new_end; ++pos)
 	{
 		alloc_.construct(pos, val);
 	}
+}
+
+template<class T, class Allocator>
+typename vector<T, Allocator>::size_type
+vector<T, Allocator>::recommend_size_(size_type new_size) const
+{
+	const size_type ms = max_size();
+	if (new_size > ms)
+		throw std::length_error("ft::vector");
+	const size_type cap = capacity();
+	if (cap >= ms / 2)
+		return (ms);
+	// FIX: can i use algorithm?
+	return (std::max(2 * cap, new_size));
 }
 
 } // namespace ft
