@@ -6,7 +6,7 @@
 #include <memory>
 #include <vector>
 
-Test(vector, default_construct)
+Test(vector_cnst, default_construct)
 {
 	ft::vector<int> v;
 	std::vector<int> origin;
@@ -20,7 +20,7 @@ Test(vector, default_construct)
 	cr_expect_eq(v.begin(), v.end());
 }
 
-Test(vector, fill_constructor)
+Test(vector_cnst, fill_constructor)
 {
 	const int n = 10;
 	const int val = 42;
@@ -38,7 +38,16 @@ Test(vector, fill_constructor)
 	cr_expect_eq(v_default_val[n - 1], int());
 }
 
-Test(vector, copy_construct)
+Test(vector_cnst, fill_constructor_by_zero)
+{
+	ft::vector<int> v(0);
+	std::vector<int> origin(0);
+
+	cr_expect_eq(v.begin(), v.end());
+	cr_expect_eq(origin.begin().base(), v.begin());
+}
+
+Test(vector_cnst, copy_construct)
 {
 	ft::vector<int> v;
 
@@ -52,11 +61,12 @@ Test(vector, copy_construct)
 
 	cr_expect_eq(v[1], copy[1]);
 
+	criterion::logging::info << "test deep copy" << std::flush;
 	v[1] = 0;
 	cr_expect_neq(v[1], copy[1]);
 }
 
-Test(vector, range_constructor)
+Test(vector_cnst, range_constructor)
 {
 	std::vector<int> v_iter = {1, 2, 3, 4, 5};
 	const int p_iter[] = {1, 2, 3, 4, 5};

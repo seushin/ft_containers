@@ -8,6 +8,7 @@
 
 namespace ft
 {
+
 template<class T, class Allocator = std::allocator<T> >
 class vector
 {
@@ -51,19 +52,22 @@ public:
 
 	// modifiers
 	void push_back(const value_type &val);
+	void clear();
 
 private:
-	iterator begin_;
-	iterator end_;
-	iterator end_cap_;
+	pointer begin_;
+	pointer end_;
+	pointer end_cap_;
 	allocator_type alloc_;
 
 	// util functions
 private:
 	void allocate_(size_type n);
 	void deallocate_();
+	void reallocate_(size_type n);
 	void construct_at_end_(size_type n);
 	void construct_at_end_(size_type n, const_reference val);
+	void destroy_at_end_(pointer new_end);
 	size_type recommend_size_(size_type new_size) const;
 };
 
@@ -105,15 +109,25 @@ vector<T, Allocator>::vector(const vector &other)
 template<class T, class Allocator>
 vector<T, Allocator> &vector<T, Allocator>::operator=(const vector &rhs)
 {
-	// deallocate + allocate
+	deallocate_();
 
+	// FIX: allocator의 대입 연산자는 예상하는대로 동작하는가?
 	alloc_ = rhs.alloc_;
+	allocate_(rhs.capacity());
+
+	size_type sz = rhs.size();
+	for (size_type i = 0; i < sz; i++)
+	{
+		construct_at_end_(1, rhs[i]);
+	}
 	return (*this);
 }
 
 template<class T, class Allocator>
 vector<T, Allocator>::~vector()
-{}
+{
+	deallocate_();
+}
 
 // iterators
 template<class T, class Allocator>
@@ -178,6 +192,15 @@ void vector<T, Allocator>::push_back(const value_type &val)
 {
 	// FIXME
 	// allocate & insert element
+	if (end_ == end_cap_)
+		reallocate_(recommend_size_(capacity() + 1));
+	construct_at_end_(1, val);
+}
+
+template<class T, class Allocator>
+void vector<T, Allocator>::clear()
+{
+	destroy_at_end_(begin_);
 }
 
 // private member function
@@ -195,10 +218,25 @@ void vector<T, Allocator>::deallocate_()
 {
 	if (begin_ != 0)
 	{
-		// FIX: destroy
+		clear();
 		alloc_.deallocate(begin_, capacity());
 	}
 	begin_ = end_ = end_cap_ = 0;
+}
+
+template<class T, class Allocator>
+void vector<T, Allocator>::reallocate_(size_type n)
+{
+	// TODO: impl split_buffer
+	n = 0;
+
+
+	/*
+	 * allocate new memory with large size
+	 * construct at front for new memory
+	 * swap each memory
+	 * destruct tmp container
+	 */
 }
 
 template<class T, class Allocator>
@@ -218,6 +256,15 @@ void vector<T, Allocator>::construct_at_end_(size_type n, const_reference val)
 	for (pointer &pos = end_; end_ != new_end; ++pos)
 	{
 		alloc_.construct(pos, val);
+	}
+}
+
+template<class T, class Allocator>
+void vector<T, Allocator>::destroy_at_end_(pointer new_end)
+{
+	while (new_end != end_)
+	{
+		alloc_.destroy(--end_);
 	}
 }
 

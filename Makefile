@@ -1,35 +1,25 @@
-NAME := unit-test
-
-# criterion directory
-D_CRIT := $(wildcard $(shell brew --prefix)/Cellar/criterion/*)
+NAME := test-main
 
 D_SRC := ./
 D_OBJ := ./obj
-D_INC := ../include
+D_INC := ./include
 
-SRC := vector/constructor.cpp
-SRC += vector/push_back.cpp
+SRC := main.cpp
 
 OBJ := $(addprefix $(D_OBJ)/, $(SRC:.cpp=.o))
-OBJ_SUBDIR := $(addprefix $(D_OBJ)/, vector)
 
 DEP := $(OBJ:.o=.d)
 
 INC := -I$(D_INC)
-INC += -I$(D_CRIT)/include/
 
-LIB := -L$(D_CRIT)/lib/ -lcriterion
+LIB :=
 
 CXX := c++
-CXXFLAGS := -std=c++11
+CXXFLAGS := -std=c++98 -Wall -Wextra -Werror
 
 ifeq ($(DEBUG), 1)
 CXXFLAGS += -g -fsanitize=address
 endif
-
-.PHONY: test
-test: all
-	./$(NAME) --jobs 1 --verbose=0
 
 .PHONY: all
 all: $(NAME)
@@ -37,9 +27,9 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	$(CXX) $(CXXFLAGS) $(INC) -o $@ $(OBJ) $(LIB)
 
-$(OBJ): | $(OBJ_SUBDIR)
+$(OBJ): | $(D_OBJ)
 
-$(OBJ_SUBDIR):
+$(D_OBJ):
 	@mkdir -p $@
 
 $(D_OBJ)/%.o: $(D_SRC)/%.cpp
