@@ -99,8 +99,7 @@ vector<T, Allocator>::vector(const allocator_type &alloc)
 {}
 
 template<class T, class Allocator>
-vector<T, Allocator>::vector(size_type n)
-	: begin_(0), end_(0), end_cap_(0), alloc_()
+vector<T, Allocator>::vector(size_type n) : begin_(0), end_(0), end_cap_(0), alloc_()
 {
 	if (n > 0)
 	{

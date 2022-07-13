@@ -1,6 +1,5 @@
 #include "vector.hpp"
 #include <criterion/criterion.h>
-#include <criterion/logging.h>
 #include <criterion/new/assert.h>
 
 Test(vector_iter, iterator_basic)

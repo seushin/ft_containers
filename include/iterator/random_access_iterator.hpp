@@ -8,9 +8,9 @@ namespace ft
 {
 template<class Iter>
 class random_access_iterator : public iterator<random_access_iterator_tag,
-										typename iterator_traits<Iter>::value_type,
-										typename iterator_traits<Iter>::difference_type,
-										typename iterator_traits<Iter>::reference>
+											   typename iterator_traits<Iter>::value_type,
+											   typename iterator_traits<Iter>::difference_type,
+											   typename iterator_traits<Iter>::reference>
 {
 private:
 	Iter curr_;
@@ -155,8 +155,9 @@ bool operator>=(const random_access_iterator<IterL> &lhs, const random_access_it
 }
 
 template<class Iter>
-random_access_iterator<Iter> operator+(const typename random_access_iterator<Iter>::difference_type n,
-								random_access_iterator<Iter> it)
+random_access_iterator<Iter>
+operator+(const typename random_access_iterator<Iter>::difference_type n,
+		  random_access_iterator<Iter> it)
 {
 	return (random_access_iterator<Iter>(it + n));
 }
