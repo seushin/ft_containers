@@ -39,6 +39,8 @@ public:
 	random_access_iterator &operator=(const random_access_iterator &rhs)
 	{
 		curr_ = rhs.curr_;
+
+		return (*this);
 	}
 
 	~random_access_iterator() {}
