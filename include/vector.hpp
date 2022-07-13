@@ -5,6 +5,8 @@
 #include "iterator/random_access_iterator.hpp"
 #include "split_buffer.hpp"
 #include "util.hpp"
+#include "util/enable_if.hpp"
+#include "util/is_integral.hpp"
 #include <algorithm>
 #include <memory>
 #include <stdexcept>
@@ -56,7 +58,8 @@ public:
 
 	// modifiers
 	template<class InputIterator>
-	void assign(InputIterator first, InputIterator last);
+	typename enable_if<!is_integral<InputIterator>::value, void>::type
+	assign(InputIterator first, InputIterator last);
 	void assign(size_type n, const value_type &val);
 	void push_back(const value_type &val);
 	void clear();
