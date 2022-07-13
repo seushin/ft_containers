@@ -1,6 +1,8 @@
 #ifndef SPLIT_BUFFER_HPP
 #define SPLIT_BUFFER_HPP
 
+#include "util.hpp"
+#include <iostream>
 #include <memory>
 
 namespace ft
@@ -24,22 +26,20 @@ public:
 	typedef typename allocator_type::size_type        size_type;
 	// clang-format on
 
-	split_buffer();
-	split_buffer(size_type new_size, size_type old_size, allocator_type &alloc);
-	~split_buffer();
-	void clear();
-	size_type capacity() const;
-
-private:
 	allocator_type alloc_;
 	pointer start_;
 	pointer begin_;
 	pointer end_;
 	pointer end_cap_;
 
-private:
+	split_buffer();
+	split_buffer(size_type new_size, size_type old_size, allocator_type &alloc);
+	~split_buffer();
+	size_type capacity() const;
+
 	void construct_at_end_(size_type n);
 	void construct_at_end_(size_type n, const_reference val);
+	void construct_at_front_(pointer b, pointer e, size_type n);
 	void destroy_at_end_(pointer new_end);
 	size_type recommend_size_(size_type new_size) const;
 };
@@ -65,20 +65,63 @@ split_buffer<T, Allocator>::split_buffer(size_type new_size,
 template<class T, class Allocator>
 split_buffer<T, Allocator>::~split_buffer()
 {
-	clear();
-	alloc_.deallocate(begin_, capacity());
-}
-
-template<class T, class Allocator>
-void split_buffer<T, Allocator>::clear()
-{
 	destroy_at_end_(start_);
+	alloc_.deallocate(start_, capacity());
 }
 
 template<class T, class Allocator>
 typename split_buffer<T, Allocator>::size_type split_buffer<T, Allocator>::capacity() const
 {
 	return (static_cast<size_type>(end_cap_ - start_));
+}
+
+template<class T, class Allocator>
+void split_buffer<T, Allocator>::construct_at_end_(size_type n)
+{
+	const_pointer new_end = end_ + n;
+	for (pointer &pos = end_; end_ != new_end; ++pos)
+	{
+		alloc_.construct(pos);
+	}
+}
+
+template<class T, class Allocator>
+void split_buffer<T, Allocator>::construct_at_end_(size_type n, const_reference val)
+{
+	const_pointer new_end = end_ + n;
+	for (pointer &pos = end_; end_ != new_end; ++pos)
+	{
+		alloc_.construct(pos, val);
+	}
+}
+
+template<class T, class Allocator>
+void split_buffer<T, Allocator>::construct_at_front_(pointer b, pointer e, size_type n)
+{
+	// TODO
+	/*
+	if (start_ == end_)
+	{
+		for (pointer p = b; p != e; ++p)
+			construct_at_end_(1, *p);
+	}
+	else
+	{
+		for (pointer p = b, cur = start_; p != e; ++p, ++cur)
+		{
+			alloc_.construct(cur, *p);
+		}
+	}
+	*/
+}
+
+template<class T, class Allocator>
+void split_buffer<T, Allocator>::destroy_at_end_(pointer new_end)
+{
+	while (new_end != end_)
+	{
+		alloc_.destroy(--end_);
+	}
 }
 
 } // namespace ft

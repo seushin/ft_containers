@@ -42,6 +42,7 @@ Test(vector_cnst, fill_constructor_by_zero)
 {
 	ft::vector<int> v(0);
 
+	criterion::logging::info << "cap: " << v.capacity() << ", size: " << v.size() << std::flush;
 	cr_expect_eq(v.begin(), v.end());
 	cr_expect_eq(v.size(), 0);
 	cr_expect_eq(v.capacity(), 0);
@@ -52,7 +53,12 @@ Test(vector_cnst, copy_construct)
 	ft::vector<int> v;
 
 	v.push_back(10);
+	criterion::logging::info << "v[0]: " << v[0] << std::flush;
+	criterion::logging::info << "cap: " << v.capacity() << ", size: " << v.size() << std::flush;
+
 	v.push_back(42);
+	criterion::logging::info << "cap: " << v.capacity() << ", size: " << v.size() << std::flush;
+	criterion::logging::info << "origin: " << v[0] << ", " << v[1] << std::flush;
 
 	ft::vector<int> copy(v);
 

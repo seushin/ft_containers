@@ -3,6 +3,8 @@
 
 #include "iterator/iterator_traits.hpp"
 #include "iterator/random_access_iterator.hpp"
+#include "split_buffer.hpp"
+#include "util.hpp"
 #include <algorithm>
 #include <memory>
 #include <stdexcept>
@@ -50,6 +52,7 @@ public:
 	size_type size() const;
 	size_type max_size() const;
 	size_type capacity() const;
+	void reserve(size_type n);
 
 	// modifiers
 	void push_back(const value_type &val);
@@ -189,14 +192,30 @@ typename vector<T, Allocator>::size_type vector<T, Allocator>::capacity() const
 	return (static_cast<size_type>(end_cap_ - begin_));
 }
 
+template<class T, class Allocator>
+void vector<T, Allocator>::reserve(size_type n)
+{
+	if (n > capacity())
+	{
+		// alloc and move object
+		split_buffer<T> buf(n, 0, alloc_);
+
+		for (pointer p = begin_; p != end_; ++p)
+		{
+			buf.construct_at_end_(1, *p);
+		}
+		ft::swap(begin_, buf.start_);
+		ft::swap(end_, buf.end_);
+		ft::swap(end_cap_, buf.end_cap_);
+	}
+}
+
 // modifiers
 template<class T, class Allocator>
 void vector<T, Allocator>::push_back(const value_type &val)
 {
-	// FIXME
-	// allocate & insert element
 	if (end_ == end_cap_)
-		reallocate_(recommend_size_(capacity() + 1));
+		reserve(recommend_size_(capacity() + 1));
 	construct_at_end_(1, val);
 }
 
@@ -225,20 +244,6 @@ void vector<T, Allocator>::destruct_and_deallocate_()
 		alloc_.deallocate(begin_, capacity());
 	}
 	begin_ = end_ = end_cap_ = 0;
-}
-
-template<class T, class Allocator>
-void vector<T, Allocator>::reallocate_(size_type n)
-{
-	// TODO: impl split_buffer
-	n = 0;
-
-	/*
-	 * allocate new memory with large size
-	 * construct at front for new memory
-	 * swap each memory
-	 * destruct tmp container
-	 */
 }
 
 template<class T, class Allocator>
