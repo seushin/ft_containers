@@ -58,8 +58,8 @@ public:
 
 	// modifiers
 	template<class InputIterator>
-	typename enable_if<!is_integral<InputIterator>::value, void>::type
-	assign(InputIterator first, InputIterator last);
+	void assign(InputIterator first,
+				typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last);
 	void assign(size_type n, const value_type &val);
 	void push_back(const value_type &val);
 	void clear();
@@ -217,6 +217,41 @@ void vector<T, Allocator>::reserve(size_type n)
 }
 
 // modifiers
+
+template<class T, class Allocator>
+template<class InputIterator>
+void vector<T, Allocator>::assign(
+		InputIterator first,
+		typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last)
+{
+	clear();
+	for (; first != last; ++first)
+	{
+		push_back(*first);
+	}
+}
+
+template<class T, class Allocator>
+void vector<T, Allocator>::assign(size_type n, const value_type &val)
+{
+	if (n <= capacity())
+	{
+		size_type old_size = size();
+
+		// begin부터 min(old_size, n)까지 val로 대입하기
+		if (n > old_size)
+			construct_at_end_(n - old_size, val);
+		else
+			destroy_at_end_(begin_ + n);
+	}
+	else
+	{
+		destruct_and_deallocate_();
+		allocate_(recommend_size_(n));
+		construct_at_end_(n, val);
+	}
+}
+
 template<class T, class Allocator>
 void vector<T, Allocator>::push_back(const value_type &val)
 {
