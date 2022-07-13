@@ -1,8 +1,8 @@
 #ifndef ITERATOR_TRAITS_HPP
 #define ITERATOR_TRAITS_HPP
 
-#include "util/enable_if.hpp"
 #include "iterator/category.hpp"
+#include "util/enable_if.hpp"
 #include <cstddef>
 
 namespace ft

@@ -49,9 +49,9 @@ split_buffer<T, Allocator>::split_buffer() : start_(0), begin_(0), end_(0), end_
 {}
 
 template<class T, class Allocator>
-split_buffer<T, Allocator>::split_buffer(
-		size_type new_size, size_type old_size, allocator_type &alloc
-)
+split_buffer<T, Allocator>::split_buffer(size_type new_size,
+										 size_type old_size,
+										 allocator_type &alloc)
 	: alloc_(alloc)
 {
 	if (new_size > 0)

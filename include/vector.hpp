@@ -2,6 +2,7 @@
 #define VECTOR_HPP
 
 #include "iterator/iterator_traits.hpp"
+#include "iterator/vector_iterator.hpp"
 #include <algorithm>
 #include <memory>
 #include <stdexcept>
@@ -21,7 +22,7 @@ public:
 	typedef typename allocator_type::const_pointer              const_pointer;
 	typedef typename allocator_type::reference                  reference;
 	typedef typename allocator_type::const_reference            const_reference;
-	typedef pointer                                             iterator;
+	typedef vector_iterator<pointer>                            iterator;
 	typedef const_pointer                                       const_iterator;
 	typedef typename iterator_traits<iterator>::difference_type difference_type;
 	typedef typename allocator_type::size_type                  size_type;
@@ -229,7 +230,6 @@ void vector<T, Allocator>::reallocate_(size_type n)
 {
 	// TODO: impl split_buffer
 	n = 0;
-
 
 	/*
 	 * allocate new memory with large size

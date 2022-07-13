@@ -41,10 +41,10 @@ Test(vector_cnst, fill_constructor)
 Test(vector_cnst, fill_constructor_by_zero)
 {
 	ft::vector<int> v(0);
-	std::vector<int> origin(0);
 
 	cr_expect_eq(v.begin(), v.end());
-	cr_expect_eq(origin.begin().base(), v.begin());
+	cr_expect_eq(v.size(), 0);
+	cr_expect_eq(v.capacity(), 0);
 }
 
 Test(vector_cnst, copy_construct)
