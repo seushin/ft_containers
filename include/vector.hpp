@@ -34,10 +34,18 @@ public:
 
 	vector();
 	vector(const allocator_type &alloc);
+
 	vector(size_type n);
 	vector(size_type n, const value_type &val);
+
+	template<class InputIterator>
+	vector(InputIterator first,
+		   typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last);
+
 	vector(const vector &other);
+
 	vector &operator=(const vector &rhs);
+
 	~vector();
 
 	// iterators
@@ -110,6 +118,16 @@ vector<T, Allocator>::vector(size_type n, const value_type &val)
 		allocate_(n);
 		construct_at_end_(n, val);
 	}
+}
+
+template<class T, class Allocator>
+template<class InputIterator>
+vector<T, Allocator>::vector(
+		InputIterator first,
+		typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last)
+	: begin_(0), end_(0), end_cap_(0), alloc_()
+{
+	assign(first, last);
 }
 
 template<class T, class Allocator>

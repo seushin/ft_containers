@@ -74,9 +74,15 @@ Test(vector_cnst, copy_construct)
 
 Test(vector_cnst, range_constructor)
 {
+	const int n = 5;
 	std::vector<int> v_iter = {1, 2, 3, 4, 5};
-	const int p_iter[] = {1, 2, 3, 4, 5};
-	cr_fail("ft::vector<int> v1(v_iter.begin(), v_iter.end());");
-	cr_fail("ft::vector<int> v2(p_iter.begin(), p_iter.end());");
-	cr_fail("to be eq: v1, v2");
+	const int p_iter[n] = {1, 2, 3, 4, 5};
+
+	ft::vector<int> v1(v_iter.begin(), v_iter.end());
+	ft::vector<int> v2(p_iter, p_iter + n);
+
+	cr_expect_eq(v1.size(), n);
+	cr_expect_eq(v1.size(), v2.size());
+	cr_expect_eq(v1[0], v2[0]);
+	cr_expect_eq(v1[n - 1], v2[n - 1]);
 }
