@@ -64,7 +64,7 @@ private:
 	// util functions
 private:
 	void allocate_(size_type n);
-	void deallocate_();
+	void destruct_and_deallocate_();
 	void reallocate_(size_type n);
 	void construct_at_end_(size_type n);
 	void construct_at_end_(size_type n, const_reference val);
@@ -110,7 +110,7 @@ vector<T, Allocator>::vector(const vector &other)
 template<class T, class Allocator>
 vector<T, Allocator> &vector<T, Allocator>::operator=(const vector &rhs)
 {
-	deallocate_();
+	destruct_and_deallocate_();
 
 	// FIX: allocator의 대입 연산자는 예상하는대로 동작하는가?
 	alloc_ = rhs.alloc_;
@@ -127,7 +127,7 @@ vector<T, Allocator> &vector<T, Allocator>::operator=(const vector &rhs)
 template<class T, class Allocator>
 vector<T, Allocator>::~vector()
 {
-	deallocate_();
+	destruct_and_deallocate_();
 }
 
 // iterators
@@ -215,7 +215,7 @@ void vector<T, Allocator>::allocate_(size_type n)
 }
 
 template<class T, class Allocator>
-void vector<T, Allocator>::deallocate_()
+void vector<T, Allocator>::destruct_and_deallocate_()
 {
 	if (begin_ != 0)
 	{
