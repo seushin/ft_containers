@@ -55,6 +55,9 @@ public:
 	void reserve(size_type n);
 
 	// modifiers
+	template<class InputIterator>
+	void assign(InputIterator first, InputIterator last);
+	void assign(size_type n, const value_type &val);
 	void push_back(const value_type &val);
 	void clear();
 
