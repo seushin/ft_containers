@@ -11,6 +11,7 @@ SRC := vector/constructor.cpp
 SRC += vector/push_back.cpp
 SRC += vector/pop_back.cpp
 SRC += vector/iterator.cpp
+SRC += vector/insert.cpp
 SRC += vector/assign.cpp
 
 OBJ := $(addprefix $(D_OBJ)/, $(SRC:.cpp=.o))
