@@ -1,7 +1,7 @@
 #ifndef SPLIT_BUFFER_HPP
 #define SPLIT_BUFFER_HPP
 
-#include "util.hpp"
+#include "algorithm.hpp"
 #include <iostream>
 #include <memory>
 

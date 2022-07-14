@@ -1,5 +1,5 @@
-#ifndef UTIL_HPP
-#define UTIL_HPP
+#ifndef ALGORITHM_HPP
+#define ALGORITHM_HPP
 
 namespace ft
 {
@@ -27,4 +27,4 @@ T &max(T &a, T &b)
 
 } // namespace ft
 
-#endif // !UTIL_HPP
+#endif // !ALGORITHM_HPP
