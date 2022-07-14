@@ -2,51 +2,45 @@
 #include <criterion/criterion.h>
 #include <criterion/new/assert.h>
 
-Test(vector_iter, iterator_basic)
+Test(vector_iter, should_refer_expected)
 {
-	ft::vector<int> v(10, 42);
-	ft::vector<int>::iterator begin, end;
-
-	begin = v.begin();
-	end = v.end();
-
-	cr_expect_eq(*begin, v[0]);
-
-	*begin = 0;
-	cr_expect_eq(v[0], 0);
-
-	cr_expect_eq(begin + v.size(), end);
-}
-
-Test(vector_iter, iterator_iteration)
-{
-	const int n = 10;
 	ft::vector<int> v;
 	ft::vector<int>::iterator begin, end;
 
-	for (int i = 0; i < n; ++i)
-		v.push_back(i);
+	v.push_back(1);
+	v.push_back(42);
 
 	begin = v.begin();
 	end = v.end();
 
-	int i = 0;
-	for (ft::vector<int>::iterator it = begin; it != end; ++it)
-	{
-		cr_expect_eq(*it, i);
-		i++;
-	}
-	cr_expect_eq(i, v.size());
+	cr_expect_eq(*begin++, v[0]);
+	cr_expect_eq(*begin, v[1]);
 }
 
-Test(vector_iter, const_iterator_basic)
+Test(vector_iter, should_iterate_by_size)
 {
-	const ft::vector<int> v(10, 42);
+	ft::vector<int> v(10, 42);
+	ft::vector<int>::iterator begin, end;
+	int count = 0;
+
+	begin = v.begin();
+	end = v.end();
+
+	for (; begin != end; ++begin)
+		count++;
+
+	cr_expect_eq(count, v.size());
+}
+
+Test(vector_iter, has_const_iterator)
+{
+	const int value = 42;
+	const ft::vector<int> v(10, value);
 	ft::vector<int>::const_iterator begin, end;
 
 	begin = v.begin();
 	end = v.end();
 
-	cr_expect_eq(*begin, v[0]);
-	cr_expect_eq(begin + v.size(), end);
+	for (; begin != end; ++begin)
+		cr_expect_eq(*begin, value);
 }

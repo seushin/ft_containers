@@ -25,17 +25,28 @@ Test(vector_cnst, fill_constructor)
 	const int n = 10;
 	const int val = 42;
 	ft::vector<int> v(n, val);
-	ft::vector<int> v_default_val(n);
 	std::vector<int> origin(n);
 
 	criterion::logging::info << "std::vector construct with size: size=" << origin.size()
 							 << " capacity=" << origin.capacity() << std::flush;
-	criterion::logging::info << "ft::vector construct with size: size=" << v_default_val.size()
-							 << " capacity=" << v_default_val.capacity() << std::flush;
+	criterion::logging::info << "ft::vector construct with size: size=" << v.size()
+							 << " capacity=" << v.capacity() << std::flush;
 	cr_expect_eq(v.size(), n);
-	cr_expect_eq(v_default_val.size(), n);
 	cr_expect_eq(v[n - 1], val);
-	cr_expect_eq(v_default_val[n - 1], int());
+}
+
+Test(vector_cnst, fill_constructor_default_value)
+{
+	const int n = 10;
+	ft::vector<int> v(n);
+	std::vector<int> origin(n);
+
+	criterion::logging::info << "std::vector construct with size: size=" << origin.size()
+							 << " capacity=" << origin.capacity() << std::flush;
+	criterion::logging::info << "ft::vector construct with size: size=" << v.size()
+							 << " capacity=" << v.capacity() << std::flush;
+	cr_expect_eq(v.size(), n);
+	cr_expect_eq(v[n - 1], int());
 }
 
 Test(vector_cnst, fill_constructor_by_zero)
@@ -45,7 +56,6 @@ Test(vector_cnst, fill_constructor_by_zero)
 	criterion::logging::info << "cap: " << v.capacity() << ", size: " << v.size() << std::flush;
 	cr_expect_eq(v.begin(), v.end());
 	cr_expect_eq(v.size(), 0);
-	cr_expect_eq(v.capacity(), 0);
 }
 
 Test(vector_cnst, copy_construct)
@@ -53,12 +63,7 @@ Test(vector_cnst, copy_construct)
 	ft::vector<int> v;
 
 	v.push_back(10);
-	criterion::logging::info << "v[0]: " << v[0] << std::flush;
-	criterion::logging::info << "cap: " << v.capacity() << ", size: " << v.size() << std::flush;
-
 	v.push_back(42);
-	criterion::logging::info << "cap: " << v.capacity() << ", size: " << v.size() << std::flush;
-	criterion::logging::info << "origin: " << v[0] << ", " << v[1] << std::flush;
 
 	ft::vector<int> copy(v);
 

@@ -3,7 +3,7 @@
 #include <criterion/logging.h>
 #include <criterion/new/assert.h>
 
-Test(vector_pb, push_back_basic)
+Test(vector_pb, should_push_to_empty_vector)
 {
 	ft::vector<int> v;
 	const int n = 5;
@@ -17,7 +17,7 @@ Test(vector_pb, push_back_basic)
 	cr_expect_eq(v.size(), n);
 }
 
-Test(vector_pb, push_back_range_vector)
+Test(vector_pb, should_push_to_vector_has_elements)
 {
 	const int range = 10;
 	const int range_val = 42;
@@ -35,7 +35,7 @@ Test(vector_pb, push_back_range_vector)
 	cr_expect_eq(v.size(), n + range);
 }
 
-Test(vector_pb, push_back_repeat)
+Test(vector_pb, call_many_times)
 {
 	ft::vector<int> v;
 	const int n = 5000000;

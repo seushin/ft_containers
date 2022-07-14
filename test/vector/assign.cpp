@@ -1,12 +1,26 @@
 #include "vector.hpp"
 #include <criterion/criterion.h>
+#include <criterion/logging.h>
 #include <criterion/new/assert.h>
 #include <list>
 
-Test(vector_assign, assign_range_by_iter)
+Test(vector_assign, should_change_size_correctly)
 {
+	ft::vector<int> target(100, 0);
 	ft::vector<int> v(10, 42);
+	int old_size;
+
+	old_size = target.size();
+	target.assign(v.begin(), v.end());
+
+	cr_expect_neq(target.size(), old_size);
+	cr_expect_eq(target.size(), v.size());
+}
+
+Test(vector_assign, call_by_iter)
+{
 	ft::vector<int> target(5, 0);
+	ft::vector<int> v(10, 42);
 
 	target.assign(v.begin(), v.end());
 
@@ -15,7 +29,7 @@ Test(vector_assign, assign_range_by_iter)
 	cr_expect_eq(v[9], target[9]);
 }
 
-Test(vector_assign, assign_range_by_std_iter)
+Test(vector_assign, call_by_std_iter)
 {
 	ft::vector<int> target;
 	std::list<int> li(10, 42);
@@ -27,10 +41,10 @@ Test(vector_assign, assign_range_by_std_iter)
 	cr_expect_eq(target[9], li.back());
 }
 
-Test(vector_assign, assign_range_by_pointer)
+Test(vector_assign, call_by_pointer)
 {
-	const int n = 5;
 	ft::vector<int> target;
+	const int n = 5;
 	int arr[n] = {1, 2, 3, 4, 5};
 
 	target.assign(arr, arr + n);
@@ -40,14 +54,16 @@ Test(vector_assign, assign_range_by_pointer)
 	cr_expect_eq(target[n - 1], arr[n - 1]);
 }
 
-Test(vector_assign, assign_fill)
+Test(vector_assign, call_by_size_and_value)
 {
-	ft::vector<int> v(10, 42);
-	ft::vector<int> target;
+	ft::vector<int> target(100, 0);
+	const int n = 10;
+	const int value = 42;
 
-	target.assign(10, 42);
-	// TODO: cr_expect_eq(v, target);
-	cr_expect_eq(v.size(), target.size());
-	cr_expect_eq(v[0], target[0]);
-	cr_expect_eq(v[9], target[9]);
+	target.assign(n, value);
+
+	criterion::logging::info << "target[0]: " << target[0] << std::flush;
+	cr_expect_eq(target.size(), n);
+	cr_expect_eq(target[0], value);
+	cr_expect_eq(target[n - 1], value);
 }
