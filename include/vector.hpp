@@ -318,7 +318,7 @@ vector<T, Allocator>::insert(iterator position, const value_type &val)
 		vector tmp(position, end());
 
 		destroy_at_end_(position.base());
-		construct_at_end_(val);
+		construct_at_end_(1, val);
 		construct_at_end_(tmp.begin(), tmp.end());
 	}
 	return (position);
@@ -446,9 +446,9 @@ void vector<T, Allocator>::destroy_at_end_(pointer new_end)
 template<class T, class Allocator>
 void vector<T, Allocator>::swap_split_buffer(split_buffer<T, Allocator> &buf)
 {
-	swap(begin_, buf.start_);
-	swap(end_, buf.end_);
-	swap(end_cap_, buf.end_cap_);
+	ft::swap(begin_, buf.start_);
+	ft::swap(end_, buf.end_);
+	ft::swap(end_cap_, buf.end_cap_);
 }
 
 template<class T, class Allocator>

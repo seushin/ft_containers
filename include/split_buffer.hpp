@@ -28,11 +28,11 @@ public:
 	typedef typename allocator_type::size_type        size_type;
 	// clang-format on
 
-	allocator_type alloc_;
 	pointer start_;
 	pointer begin_;
 	pointer end_;
 	pointer end_cap_;
+	allocator_type alloc_;
 
 	split_buffer();
 	split_buffer(size_type new_size, size_type old_size, allocator_type &alloc);
