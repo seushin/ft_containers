@@ -255,8 +255,10 @@ void vector<T, Allocator>::assign(size_type n, const value_type &val)
 	if (n <= capacity())
 	{
 		size_type old_size = size();
+		size_type new_size = min(old_size, n);
 
-		// begin부터 min(old_size, n)까지 val로 대입하기
+		for (size_type i = 0; i < new_size; ++i)
+			begin_[i] = val;
 		if (n > old_size)
 			construct_at_end_(n - old_size, val);
 		else
