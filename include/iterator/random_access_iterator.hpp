@@ -154,6 +154,13 @@ bool operator>=(const random_access_iterator<IterL> &lhs, const random_access_it
 	return (!(lhs < rhs));
 }
 
+template<class IterL, class IterR>
+typename random_access_iterator<IterL>::difference_type
+operator-(const random_access_iterator<IterL> &lhs, const random_access_iterator<IterR> &rhs)
+{
+	return (lhs.base() - rhs.base());
+}
+
 template<class Iter>
 random_access_iterator<Iter>
 operator+(const typename random_access_iterator<Iter>::difference_type n,
