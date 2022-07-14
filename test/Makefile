@@ -9,6 +9,7 @@ D_INC := ../include
 
 SRC := vector/constructor.cpp
 SRC += vector/push_back.cpp
+SRC += vector/pop_back.cpp
 SRC += vector/iterator.cpp
 SRC += vector/assign.cpp
 

@@ -70,6 +70,7 @@ public:
 				typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last);
 	void assign(size_type n, const value_type &val);
 	void push_back(const value_type &val);
+	void pop_back();
 	void clear();
 
 private:
@@ -275,6 +276,12 @@ void vector<T, Allocator>::push_back(const value_type &val)
 	if (end_ == end_cap_)
 		reserve(recommend_size_(capacity() + 1));
 	construct_at_end_(1, val);
+}
+
+template<class T, class Allocator>
+void vector<T, Allocator>::pop_back()
+{
+	destroy_at_end_(--end_);
 }
 
 template<class T, class Allocator>
