@@ -1,6 +1,8 @@
 #ifndef ALGORITHM_HPP
 #define ALGORITHM_HPP
 
+#include "iterator/iterator_traits.hpp"
+
 namespace ft
 {
 
@@ -20,9 +22,26 @@ T &min(T &a, T &b)
 }
 
 template<class T>
+T max(T a, T b)
+{
+	return (a < b ? b : a);
+}
+
+template<class T>
 T &max(T &a, T &b)
 {
 	return (a < b ? b : a);
+}
+
+template<class InputIterator>
+typename iterator_traits<InputIterator>::difference_type
+distance(InputIterator first, InputIterator last)
+{
+	typename iterator_traits<InputIterator>::difference_type d = 0;
+
+	for (; first != last; ++first)
+		++d;
+	return (d);
 }
 
 } // namespace ft
