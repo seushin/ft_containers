@@ -74,7 +74,9 @@ public:
 	iterator insert(iterator position, const value_type &val);
 	void insert(iterator position, size_type n, const value_type &val);
 	template<class InputIterator>
-	void insert(iterator position, InputIterator first, InputIterator last);
+	void insert(iterator position,
+				InputIterator first,
+				typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last);
 	void clear();
 
 private:
@@ -320,6 +322,31 @@ vector<T, Allocator>::insert(iterator position, const value_type &val)
 		construct_at_end_(tmp.begin(), tmp.end());
 	}
 	return (position);
+}
+
+template<class T, class Allocator>
+void vector<T, Allocator>::insert(iterator position, size_type n, const value_type &val)
+{
+	size_type new_size = size() + n;
+	size_type old_size = static_cast<size_type>(distance(begin(), position));
+
+	if (new_size > capacity())
+	{
+		split_buffer<T, Allocator> buf(recommend_size_(new_size), old_size, alloc_);
+
+		buf.construct_at_end_(n, val);
+		buf.construct_at_end_(position, end());
+		buf.copy_origin_element_(begin(), position);
+		swap_split_buffer(buf);
+	}
+	else
+	{
+		vector tmp(position, end());
+
+		destroy_at_end_(position.base());
+		construct_at_end_(n, val);
+		construct_at_end_(tmp.begin(), tmp.end());
+	}
 }
 
 // private member function

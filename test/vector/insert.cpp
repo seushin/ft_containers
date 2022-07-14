@@ -6,26 +6,49 @@
 Test(vector_insert, insert_single_element_to_empty_vector)
 {
 	ft::vector<int> v;
+	ft::vector<int>::iterator pos;
 	const int value = 42;
 
 	criterion::logging::info << "before cap: " << v.capacity() << std::flush;
-	v.insert(v.begin(), value);
+	pos = v.insert(v.begin(), value);
 	criterion::logging::info << "after cap: " << v.capacity() << std::flush;
 
 	cr_expect_eq(*v.begin(), value);
+	cr_expect_eq(v.begin(), pos);
 	cr_expect_eq(v.size(), 1);
 }
 
 Test(vector_insert, insert_single_element_at_middle_of_vector)
 {
 	ft::vector<int> v(10, 1);
+	ft::vector<int>::iterator pos;
 	const int value = 42;
 	int old_size = v.size();
 
 	criterion::logging::info << "before cap: " << v.capacity() << std::flush;
-	v.insert(v.begin() + 5, value);
+	pos = v.insert(v.begin() + 5, value);
 	criterion::logging::info << "after cap: " << v.capacity() << std::flush;
 
 	cr_expect_eq(*(v.begin() + 5), value);
+	cr_expect_eq(v.begin() + 5, pos);
 	cr_expect_eq(v.size(), old_size + 1);
+}
+
+Test(vector_insert, insert_fill_at_begin)
+{
+	ft::vector<int> v(10, 1);
+	ft::vector<int>::iterator pos;
+	const int n = 420000;
+	const int value = 42;
+	int old_size = v.size();
+
+	v.insert(v.begin(), n, value);
+
+	cr_expect_eq(v.size(), old_size + n);
+	cr_expect_eq(*v.begin(), 42);
+
+	pos = v.begin() + n;
+	cr_expect_eq(*pos, 1);
+	--pos;
+	cr_expect_eq(*pos, 42);
 }
