@@ -84,7 +84,6 @@ private:
 	allocator_type alloc_;
 
 	// util functions
-private:
 	void allocate_(size_type n);
 	void destruct_and_deallocate_();
 	void reallocate_(size_type n);
@@ -230,13 +229,9 @@ void vector<T, Allocator>::reserve(size_type n)
 {
 	if (n > capacity())
 	{
-		// alloc and move object
 		split_buffer<T, Allocator> buf(n, 0, alloc_);
 
-		for (pointer p = begin_; p != end_; ++p)
-		{
-			buf.construct_at_end_(1, *p);
-		}
+		buf.construct_at_end_(begin(), end());
 		swap_split_buffer(buf);
 	}
 }
