@@ -2,7 +2,9 @@
 #define SPLIT_BUFFER_HPP
 
 #include "algorithm.hpp"
-#include <iostream>
+#include "iterator/iterator_traits.hpp"
+#include "util/enable_if.hpp"
+#include "util/is_integral.hpp"
 #include <memory>
 
 namespace ft
@@ -39,7 +41,14 @@ public:
 
 	void construct_at_end_(size_type n);
 	void construct_at_end_(size_type n, const_reference val);
-	void construct_at_front_(pointer b, pointer e, size_type n);
+	template<class InputIterator>
+	void construct_at_end_(
+			InputIterator first,
+			typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last);
+	template<class InputIterator>
+	void copy_origin_element_(
+			InputIterator first,
+			typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last);
 	void destroy_at_end_(pointer new_end);
 	size_type recommend_size_(size_type new_size) const;
 };
@@ -52,7 +61,7 @@ template<class T, class Allocator>
 split_buffer<T, Allocator>::split_buffer(size_type new_size,
 										 size_type old_size,
 										 allocator_type &alloc)
-	: alloc_(alloc)
+	: start_(0), begin_(0), end_(0), end_cap_(0), alloc_(alloc)
 {
 	if (new_size > 0)
 	{
@@ -79,7 +88,7 @@ template<class T, class Allocator>
 void split_buffer<T, Allocator>::construct_at_end_(size_type n)
 {
 	const_pointer new_end = end_ + n;
-	for (pointer &pos = end_; end_ != new_end; ++pos)
+	for (pointer &pos = end_; pos != new_end; ++pos)
 	{
 		alloc_.construct(pos);
 	}
@@ -89,30 +98,38 @@ template<class T, class Allocator>
 void split_buffer<T, Allocator>::construct_at_end_(size_type n, const_reference val)
 {
 	const_pointer new_end = end_ + n;
-	for (pointer &pos = end_; end_ != new_end; ++pos)
+
+	for (pointer &pos = end_; pos != new_end; ++pos)
 	{
 		alloc_.construct(pos, val);
 	}
 }
 
 template<class T, class Allocator>
-void split_buffer<T, Allocator>::construct_at_front_(pointer b, pointer e, size_type n)
+template<class InputIterator>
+void split_buffer<T, Allocator>::construct_at_end_(
+		InputIterator first,
+		typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last)
 {
-	// TODO
-	/*
-	if (start_ == end_)
+	typename iterator_traits<InputIterator>::difference_type d = distance(first, last);
+	const_pointer new_end = end_ + d;
+	for (pointer &pos = end_; pos != new_end; ++pos)
 	{
-		for (pointer p = b; p != e; ++p)
-			construct_at_end_(1, *p);
+		alloc_.construct(pos, *first);
+		++first;
 	}
-	else
+}
+
+template<class T, class Allocator>
+template<class InputIterator>
+void split_buffer<T, Allocator>::copy_origin_element_(
+		InputIterator first,
+		typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last)
+{
+	for (pointer pos = start_; pos != end_ && first != last; ++pos, ++first)
 	{
-		for (pointer p = b, cur = start_; p != e; ++p, ++cur)
-		{
-			alloc_.construct(cur, *p);
-		}
+		alloc_.construct(pos, *first);
 	}
-	*/
 }
 
 template<class T, class Allocator>

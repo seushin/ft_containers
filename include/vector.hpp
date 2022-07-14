@@ -1,10 +1,10 @@
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 
+#include "algorithm.hpp"
 #include "iterator/iterator_traits.hpp"
 #include "iterator/random_access_iterator.hpp"
 #include "split_buffer.hpp"
-#include "algorithm.hpp"
 #include "util/enable_if.hpp"
 #include "util/is_integral.hpp"
 #include <algorithm>
@@ -90,8 +90,13 @@ private:
 	void reallocate_(size_type n);
 	void construct_at_end_(size_type n);
 	void construct_at_end_(size_type n, const_reference val);
+	template<class InputIterator>
+	void construct_at_end_(
+			InputIterator first,
+			typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last);
 	void destroy_at_end_(pointer new_end);
 	size_type recommend_size_(size_type new_size) const;
+	void swap_split_buffer(split_buffer<T, Allocator> &buf);
 };
 
 template<class T, class Allocator>
@@ -143,9 +148,9 @@ vector<T, Allocator>::vector(const vector &other) : begin_(0), end_(0), end_cap_
 template<class T, class Allocator>
 vector<T, Allocator> &vector<T, Allocator>::operator=(const vector &rhs)
 {
-	destruct_and_deallocate_();
+	if (this == &rhs)
+		return (*this);
 
-	// FIX: allocator의 대입 연산자는 예상하는대로 동작하는가?
 	alloc_ = rhs.alloc_;
 	allocate_(rhs.capacity());
 
@@ -226,15 +231,13 @@ void vector<T, Allocator>::reserve(size_type n)
 	if (n > capacity())
 	{
 		// alloc and move object
-		split_buffer<T> buf(n, 0, alloc_);
+		split_buffer<T, Allocator> buf(n, 0, alloc_);
 
 		for (pointer p = begin_; p != end_; ++p)
 		{
 			buf.construct_at_end_(1, *p);
 		}
-		ft::swap(begin_, buf.start_);
-		ft::swap(end_, buf.end_);
-		ft::swap(end_cap_, buf.end_cap_);
+		swap_split_buffer(buf);
 	}
 }
 
@@ -296,6 +299,34 @@ void vector<T, Allocator>::clear()
 	destroy_at_end_(begin_);
 }
 
+template<class T, class Allocator>
+typename vector<T, Allocator>::iterator
+vector<T, Allocator>::insert(iterator position, const value_type &val)
+{
+	size_type new_size = size() + 1;
+	size_type old_size = static_cast<size_type>(distance(begin(), position));
+
+	if (new_size > capacity())
+	{
+		split_buffer<T, Allocator> buf(recommend_size_(new_size), old_size, alloc_);
+
+		buf.construct_at_end_(1, val);
+		buf.construct_at_end_(position, end());
+		buf.copy_origin_element_(begin(), position);
+		swap_split_buffer(buf);
+		position = begin() + old_size;
+	}
+	else
+	{
+		vector tmp(position, end());
+
+		destroy_at_end_(position.base());
+		construct_at_end_(val);
+		construct_at_end_(tmp.begin(), tmp.end());
+	}
+	return (position);
+}
+
 // private member function
 template<class T, class Allocator>
 void vector<T, Allocator>::allocate_(size_type n)
@@ -321,7 +352,7 @@ template<class T, class Allocator>
 void vector<T, Allocator>::construct_at_end_(size_type n)
 {
 	const_pointer new_end = end_ + n;
-	for (pointer &pos = end_; end_ != new_end; ++pos)
+	for (pointer &pos = end_; pos != new_end; ++pos)
 	{
 		alloc_.construct(pos);
 	}
@@ -331,9 +362,24 @@ template<class T, class Allocator>
 void vector<T, Allocator>::construct_at_end_(size_type n, const_reference val)
 {
 	const_pointer new_end = end_ + n;
-	for (pointer &pos = end_; end_ != new_end; ++pos)
+	for (pointer &pos = end_; pos != new_end; ++pos)
 	{
 		alloc_.construct(pos, val);
+	}
+}
+
+template<class T, class Allocator>
+template<class InputIterator>
+void vector<T, Allocator>::construct_at_end_(
+		InputIterator first,
+		typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last)
+{
+	typename iterator_traits<InputIterator>::difference_type d = distance(first, last);
+	const_pointer new_end = end_ + d;
+	for (pointer &pos = end_; pos != new_end; ++pos)
+	{
+		alloc_.construct(pos, *first);
+		++first;
 	}
 }
 
@@ -347,6 +393,14 @@ void vector<T, Allocator>::destroy_at_end_(pointer new_end)
 }
 
 template<class T, class Allocator>
+void vector<T, Allocator>::swap_split_buffer(split_buffer<T, Allocator> &buf)
+{
+	swap(begin_, buf.start_);
+	swap(end_, buf.end_);
+	swap(end_cap_, buf.end_cap_);
+}
+
+template<class T, class Allocator>
 typename vector<T, Allocator>::size_type
 vector<T, Allocator>::recommend_size_(size_type new_size) const
 {
@@ -356,8 +410,7 @@ vector<T, Allocator>::recommend_size_(size_type new_size) const
 	const size_type cap = capacity();
 	if (cap >= ms / 2)
 		return (ms);
-	// FIX: can i use algorithm?
-	return (std::max(2 * cap, new_size));
+	return (max(2 * cap, new_size));
 }
 
 } // namespace ft

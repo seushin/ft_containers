@@ -8,7 +8,10 @@ Test(vector_insert, insert_single_element_to_empty_vector)
 	ft::vector<int> v;
 	const int value = 42;
 
+	criterion::logging::info << "before cap: " << v.capacity() << std::flush;
 	v.insert(v.begin(), value);
+	criterion::logging::info << "after cap: " << v.capacity() << std::flush;
+
 	cr_expect_eq(*v.begin(), value);
 	cr_expect_eq(v.size(), 1);
 }
@@ -19,7 +22,10 @@ Test(vector_insert, insert_single_element_at_middle_of_vector)
 	const int value = 42;
 	int old_size = v.size();
 
+	criterion::logging::info << "before cap: " << v.capacity() << std::flush;
 	v.insert(v.begin() + 5, value);
+	criterion::logging::info << "after cap: " << v.capacity() << std::flush;
+
 	cr_expect_eq(*(v.begin() + 5), value);
 	cr_expect_eq(v.size(), old_size + 1);
 }
