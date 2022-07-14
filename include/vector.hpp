@@ -61,6 +61,7 @@ public:
 	// capacity
 	size_type size() const;
 	size_type max_size() const;
+	void resize(size_type n, value_type val = value_type());
 	size_type capacity() const;
 	void reserve(size_type n);
 
@@ -218,6 +219,21 @@ template<class T, class Allocator>
 typename vector<T, Allocator>::size_type vector<T, Allocator>::max_size() const
 {
 	return (alloc_.max_size());
+}
+
+template<class T, class Allocator>
+void vector<T, Allocator>::resize(size_type n, value_type val)
+{
+	size_type sz = size();
+	if (n < sz)
+	{
+		destroy_at_end_(begin_ + n);
+	}
+	else if (n > sz)
+	{
+		reserve(n);
+		construct_at_end_(n - sz, val);
+	}
 }
 
 template<class T, class Allocator>
