@@ -406,7 +406,7 @@ typename vector<T, Allocator>::iterator vector<T, Allocator>::erase(iterator fir
 {
 	iterator new_end;
 
-	new_end = ft::copy(first + 1, last, first);
+	new_end = ft::copy(first + (last - first), end(), first);
 	destroy_at_end_(new_end.base());
 
 	return (first);
