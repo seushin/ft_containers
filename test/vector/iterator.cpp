@@ -44,3 +44,15 @@ Test(vector_iter, has_const_iterator)
 	for (; begin != end; ++begin)
 		cr_expect_eq(*begin, value);
 }
+
+Test(vector_iter, iter_to_const_iter)
+{
+	ft::vector<int> v(10);
+	ft::vector<int>::iterator itb = v.begin();
+	ft::vector<int>::iterator ite;
+	ft::vector<int>::const_iterator citb = v.begin();
+	ft::vector<int>::const_iterator cite;
+
+	ite = v.end();
+	cite = ite;
+}
