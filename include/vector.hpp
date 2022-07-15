@@ -63,6 +63,7 @@ public:
 	size_type max_size() const;
 	void resize(size_type n, value_type val = value_type());
 	size_type capacity() const;
+	bool empty() const;
 	void reserve(size_type n);
 
 	// modifiers
@@ -242,6 +243,12 @@ template<class T, class Allocator>
 typename vector<T, Allocator>::size_type vector<T, Allocator>::capacity() const
 {
 	return (static_cast<size_type>(end_cap_ - begin_));
+}
+
+template<class T, class Allocator>
+bool vector<T, Allocator>::empty() const
+{
+	return (size() == 0);
 }
 
 template<class T, class Allocator>
