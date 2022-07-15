@@ -57,6 +57,12 @@ public:
 	// element access
 	reference operator[](size_type n);
 	const_reference operator[](size_type n) const;
+	reference at(size_type n);
+	const_reference at(size_type n) const;
+	reference front();
+	const_reference front() const;
+	reference back();
+	const_reference back() const;
 
 	// capacity
 	size_type size() const;
@@ -209,6 +215,54 @@ template<class T, class Allocator>
 typename vector<T, Allocator>::const_reference vector<T, Allocator>::operator[](size_type n) const
 {
 	return (begin_[n]);
+}
+
+template<class T, class Allocator>
+typename vector<T, Allocator>::reference vector<T, Allocator>::at(size_type n)
+{
+	if (n >= size())
+		throw std::out_of_range("ft::vector");
+	return (begin_[n]);
+}
+
+template<class T, class Allocator>
+typename vector<T, Allocator>::const_reference vector<T, Allocator>::at(size_type n) const
+{
+	if (n >= size())
+		throw std::out_of_range("ft::vector");
+	return (begin_[n]);
+}
+
+template<class T, class Allocator>
+typename vector<T, Allocator>::reference vector<T, Allocator>::front()
+{
+	if (empty())
+		throw std::out_of_range("ft::vector");
+	return (*begin_);
+}
+
+template<class T, class Allocator>
+typename vector<T, Allocator>::const_reference vector<T, Allocator>::front() const
+{
+	if (empty())
+		throw std::out_of_range("ft::vector");
+	return (*begin_);
+}
+
+template<class T, class Allocator>
+typename vector<T, Allocator>::reference vector<T, Allocator>::back()
+{
+	if (empty())
+		throw std::out_of_range("ft::vector");
+	return (*(end_ - 1));
+}
+
+template<class T, class Allocator>
+typename vector<T, Allocator>::const_reference vector<T, Allocator>::back() const
+{
+	if (empty())
+		throw std::out_of_range("ft::vector");
+	return (*(end_ - 1));
 }
 
 // capacity
