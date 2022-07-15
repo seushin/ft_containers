@@ -111,7 +111,7 @@ void split_buffer<T, Allocator>::construct_at_end_(
 		InputIterator first,
 		typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last)
 {
-	typename iterator_traits<InputIterator>::difference_type d = distance(first, last);
+	typename iterator_traits<InputIterator>::difference_type d = ft::distance(first, last);
 	const_pointer new_end = end_ + d;
 	for (pointer &pos = end_; pos != new_end; ++pos)
 	{
