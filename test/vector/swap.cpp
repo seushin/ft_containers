@@ -31,3 +31,18 @@ Test(vector_swap, should_refer_swapped_obj)
 	cr_expect_eq(a.begin(), old_b);
 	cr_expect_eq(b.begin(), old_a);
 }
+
+Test(vector_swap, call_global_swap)
+{
+	ft::vector<int> a(10, 42);
+	ft::vector<int> b(42, 10);
+	ft::vector<int>::iterator old_a, old_b;
+
+	old_a = a.begin();
+	old_b = b.begin();
+
+	swap(a, b);
+
+	cr_expect_eq(a.begin(), old_b);
+	cr_expect_eq(b.begin(), old_a);
+}

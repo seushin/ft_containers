@@ -575,6 +575,48 @@ vector<T, Allocator>::recommend_size_(size_type new_size) const
 	return (max(2 * cap, new_size));
 }
 
+template<class T, class Allocator>
+bool operator==(const vector<T, Allocator> &lhs, const vector<T, Allocator> &rhs)
+{
+	return (lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+}
+
+template<class T, class Allocator>
+bool operator!=(const vector<T, Allocator> &lhs, const vector<T, Allocator> &rhs)
+{
+	return (!(lhs == rhs));
+}
+
+template<class T, class Allocator>
+bool operator<(const vector<T, Allocator> &lhs, const vector<T, Allocator> &rhs)
+{
+	return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+}
+
+template<class T, class Allocator>
+bool operator<=(const vector<T, Allocator> &lhs, const vector<T, Allocator> &rhs)
+{
+	return (!(rhs < lhs));
+}
+
+template<class T, class Allocator>
+bool operator>(const vector<T, Allocator> &lhs, const vector<T, Allocator> &rhs)
+{
+	return (rhs < lhs);
+}
+
+template<class T, class Allocator>
+bool operator>=(const vector<T, Allocator> &lhs, const vector<T, Allocator> &rhs)
+{
+	return (!(lhs < rhs));
+}
+
+template<class T, class Allocator>
+void swap(vector<T, Allocator> &x, vector<T, Allocator> &y)
+{
+	x.swap(y);
+}
+
 } // namespace ft
 
 #endif // !VECTOR_HPP
