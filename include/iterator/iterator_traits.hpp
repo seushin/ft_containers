@@ -8,6 +8,24 @@
 namespace ft
 {
 
+template<class T>
+struct has_iterator_category
+{
+private:
+	struct two
+	{
+		char one;
+		char two;
+	};
+	template<class U>
+	static char test(typename U::iterator_category * = 0);
+	template<class U>
+	static two test(U * = 0);
+
+public:
+	static const bool value = sizeof(test<T>(0)) == 1;
+};
+
 template<class Iter, bool>
 struct iterator_traits_impl
 {};
@@ -25,7 +43,7 @@ struct iterator_traits_impl<Iter, true>
 };
 
 template<class Iter>
-struct iterator_traits : public iterator_traits_impl<Iter, true /* TODO: use enable_if */>
+struct iterator_traits : public iterator_traits_impl<Iter, has_iterator_category<Iter>::value>
 {};
 
 template<class T>
@@ -37,6 +55,18 @@ struct iterator_traits<T *>
 	typedef T                          value_type;
 	typedef T*                         pointer;
 	typedef T&                         reference;
+	// clang-format on
+};
+
+template<class T>
+struct iterator_traits<const T *>
+{
+	// clang-format off
+	typedef random_access_iterator_tag iterator_category;
+	typedef std::ptrdiff_t             difference_type;
+	typedef const T                    value_type;
+	typedef const T*                   pointer;
+	typedef const T&                   reference;
 	// clang-format on
 };
 
