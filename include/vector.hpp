@@ -87,6 +87,7 @@ public:
 				typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last);
 	iterator erase(iterator position);
 	iterator erase(iterator first, iterator last);
+	void swap(vector &x);
 	void clear();
 
 private:
@@ -471,6 +472,15 @@ typename vector<T, Allocator>::iterator vector<T, Allocator>::erase(iterator fir
 	destroy_at_end_(new_end.base());
 
 	return (first);
+}
+
+template<class T, class Allocator>
+void vector<T, Allocator>::swap(vector &x)
+{
+	ft::swap(begin_, x.begin_);
+	ft::swap(end_, x.end_);
+	ft::swap(end_cap_, x.end_cap_);
+	ft::swap(alloc_, x.alloc_);
 }
 
 template<class T, class Allocator>

@@ -15,6 +15,7 @@ SRC += vector/insert.cpp
 SRC += vector/assign.cpp
 SRC += vector/resize.cpp
 SRC += vector/erase.cpp
+SRC += vector/swap.cpp
 
 OBJ := $(addprefix $(D_OBJ)/, $(SRC:.cpp=.o))
 OBJ_SUBDIR := $(addprefix $(D_OBJ)/, vector)
