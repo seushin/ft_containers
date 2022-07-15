@@ -31,9 +31,9 @@ public:
 	template<class Iter2>
 	random_access_iterator(
 			const random_access_iterator<Iter2> &other,
-			typename enable_if<is_same<value_type,
-									   typename random_access_iterator<Iter2>::value_type>::value,
-							   void>::type * = 0)
+			typename enable_if<
+					is_same<value_type, typename random_access_iterator<Iter2>::value_type>::value,
+					void>::type * = 0)
 		: curr_(other.base())
 	{}
 

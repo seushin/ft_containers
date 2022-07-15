@@ -48,10 +48,9 @@ distance(InputIterator first, InputIterator last)
 }
 
 template<class InputIterator>
-InputIterator
-copy(InputIterator first,
-	 InputIterator last,
-	 typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type dest)
+InputIterator copy(InputIterator first,
+				   InputIterator last,
+				   typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type dest)
 {
 	for (; first != last; ++first, ++dest)
 	{
