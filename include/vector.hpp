@@ -78,6 +78,8 @@ public:
 	void insert(iterator position,
 				InputIterator first,
 				typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last);
+	iterator erase(iterator position);
+	iterator erase(iterator first, iterator last);
 	void clear();
 
 private:
@@ -307,12 +309,6 @@ void vector<T, Allocator>::pop_back()
 }
 
 template<class T, class Allocator>
-void vector<T, Allocator>::clear()
-{
-	destroy_at_end_(begin_);
-}
-
-template<class T, class Allocator>
 typename vector<T, Allocator>::iterator
 vector<T, Allocator>::insert(iterator position, const value_type &val)
 {
@@ -392,6 +388,34 @@ void vector<T, Allocator>::insert(
 		construct_at_end_(first, last);
 		construct_at_end_(tmp.begin(), tmp.end());
 	}
+}
+
+template<class T, class Allocator>
+typename vector<T, Allocator>::iterator vector<T, Allocator>::erase(iterator position)
+{
+	iterator new_end;
+
+	new_end = ft::copy(position + 1, end(), position);
+	destroy_at_end_(new_end.base());
+
+	return (position);
+}
+
+template<class T, class Allocator>
+typename vector<T, Allocator>::iterator vector<T, Allocator>::erase(iterator first, iterator last)
+{
+	iterator new_end;
+
+	new_end = ft::copy(first + 1, last, first);
+	destroy_at_end_(new_end.base());
+
+	return (first);
+}
+
+template<class T, class Allocator>
+void vector<T, Allocator>::clear()
+{
+	destroy_at_end_(begin_);
 }
 
 // private member function

@@ -2,6 +2,9 @@
 #define ALGORITHM_HPP
 
 #include "iterator/iterator_traits.hpp"
+#include "util/enable_if.hpp"
+#include "util/is_iterator.hpp"
+#include <iostream>
 
 namespace ft
 {
@@ -42,6 +45,19 @@ distance(InputIterator first, InputIterator last)
 	for (; first != last; ++first)
 		++d;
 	return (d);
+}
+
+template<class InputIterator>
+InputIterator
+copy(InputIterator first,
+	 InputIterator last,
+	 typename enable_if<is_input_iterator<InputIterator>::value, InputIterator>::type dest)
+{
+	for (; first != last; ++first, ++dest)
+	{
+		*dest = *first;
+	}
+	return (dest);
 }
 
 } // namespace ft

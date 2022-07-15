@@ -48,7 +48,7 @@ NamespaceIndentation: None
 ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: true
 PointerAlignment: Right
-PenaltyReturnTypeOnItsOwnLine: 15
+PenaltyReturnTypeOnItsOwnLine: 20
 ReflowComments: false
 SpaceAfterCStyleCast: false
 SpaceAfterLogicalNot: false
