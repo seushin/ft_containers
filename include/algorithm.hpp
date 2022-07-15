@@ -3,7 +3,7 @@
 
 #include "iterator/iterator_traits.hpp"
 #include "util/enable_if.hpp"
-#include "util/is_iterator.hpp"
+#include "util/is_integral.hpp"
 #include <iostream>
 
 namespace ft
@@ -51,7 +51,7 @@ template<class InputIterator>
 InputIterator
 copy(InputIterator first,
 	 InputIterator last,
-	 typename enable_if<is_input_iterator<InputIterator>::value, InputIterator>::type dest)
+	 typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type dest)
 {
 	for (; first != last; ++first, ++dest)
 	{
