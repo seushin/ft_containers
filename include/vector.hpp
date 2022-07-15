@@ -313,7 +313,7 @@ typename vector<T, Allocator>::iterator
 vector<T, Allocator>::insert(iterator position, const value_type &val)
 {
 	size_type new_size = size() + 1;
-	size_type old_size = static_cast<size_type>(distance(begin(), position));
+	size_type old_size = static_cast<size_type>(ft::distance(begin(), position));
 
 	if (new_size > capacity())
 	{
@@ -340,7 +340,7 @@ template<class T, class Allocator>
 void vector<T, Allocator>::insert(iterator position, size_type n, const value_type &val)
 {
 	size_type new_size = size() + n;
-	size_type old_size = static_cast<size_type>(distance(begin(), position));
+	size_type old_size = static_cast<size_type>(ft::distance(begin(), position));
 
 	if (new_size > capacity())
 	{
@@ -368,8 +368,8 @@ void vector<T, Allocator>::insert(
 		InputIterator first,
 		typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last)
 {
-	size_type new_size = size() + distance(first, last);
-	size_type old_size = static_cast<size_type>(distance(begin(), position));
+	size_type new_size = size() + ft::distance(first, last);
+	size_type old_size = static_cast<size_type>(ft::distance(begin(), position));
 
 	if (new_size > capacity())
 	{
@@ -465,7 +465,7 @@ void vector<T, Allocator>::construct_at_end_(
 		InputIterator first,
 		typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last)
 {
-	typename iterator_traits<InputIterator>::difference_type d = distance(first, last);
+	typename iterator_traits<InputIterator>::difference_type d = ft::distance(first, last);
 	const_pointer new_end = end_ + d;
 	for (pointer &pos = end_; pos != new_end; ++pos)
 	{
