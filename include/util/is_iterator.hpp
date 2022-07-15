@@ -8,11 +8,13 @@ namespace ft
 {
 
 template<class T>
-struct is_iterator_or_pointer : public has_iterator_category<T>
+struct is_iterator_or_pointer
 {
 private:
 	template<class U>
 	static char test(typename iterator_traits<U>::iterator_category * = 0);
+	template<class U>
+	static char test(U * = 0);
 
 public:
 	static const bool value = sizeof(test<T>(0)) == 1;

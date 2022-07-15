@@ -3,38 +3,39 @@
 
 #include "iterator/iterator.hpp"
 #include "iterator/iterator_traits.hpp"
+#include "util/enable_if.hpp"
 
 namespace ft
 {
 template<class Iter>
-class random_access_iterator : public iterator<random_access_iterator_tag,
-											   typename iterator_traits<Iter>::value_type,
-											   typename iterator_traits<Iter>::difference_type,
-											   typename iterator_traits<Iter>::reference>
+class random_access_iterator
 {
 private:
 	Iter curr_;
 
-	typedef iterator<random_access_iterator_tag,
-					 typename iterator_traits<Iter>::value_type,
-					 typename iterator_traits<Iter>::difference_type,
-					 typename iterator_traits<Iter>::reference>
-			base_iterator;
-
 public:
 	// clang-format off
-	typedef typename base_iterator::iterator_category iterator_category;
-	typedef typename base_iterator::difference_type   value_type;
-	typedef typename base_iterator::difference_type   difference_type;
-	typedef typename base_iterator::reference         reference;
-	typedef typename base_iterator::pointer           pointer;
+	typedef typename iterator_traits<Iter>::iterator_category iterator_category;
+	typedef typename iterator_traits<Iter>::difference_type   value_type;
+	typedef typename iterator_traits<Iter>::difference_type   difference_type;
+	typedef typename iterator_traits<Iter>::reference         reference;
+	typedef typename iterator_traits<Iter>::pointer           pointer;
 	// clang-format on
 
-	random_access_iterator() : curr_(Iter()) {}
+	random_access_iterator() : curr_() {}
 
-	random_access_iterator(const Iter &iter) : curr_(iter) {}
+	random_access_iterator(Iter iter) : curr_(iter) {}
 
 	random_access_iterator(const random_access_iterator &other) : curr_(other.curr_) {}
+
+	template<class U>
+	random_access_iterator(
+			const random_access_iterator<U> &other,
+			typename enable_if<
+					is_same<value_type, typename random_access_iterator<U>::value_type>::value,
+					void>::type * = 0)
+		: curr_(other.base())
+	{}
 
 	random_access_iterator &operator=(const random_access_iterator &rhs)
 	{
