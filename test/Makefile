@@ -9,6 +9,14 @@ D_INC := ../include
 
 SRC := vector/constructor.cpp
 SRC += vector/push_back.cpp
+SRC += vector/pop_back.cpp
+SRC += vector/iterator.cpp
+SRC += vector/insert.cpp
+SRC += vector/assign.cpp
+SRC += vector/resize.cpp
+SRC += vector/erase.cpp
+SRC += vector/swap.cpp
+SRC += vector/relational_op.cpp
 
 OBJ := $(addprefix $(D_OBJ)/, $(SRC:.cpp=.o))
 OBJ_SUBDIR := $(addprefix $(D_OBJ)/, vector)

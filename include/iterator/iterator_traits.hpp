@@ -1,19 +1,15 @@
 #ifndef ITERATOR_TRAITS_HPP
 #define ITERATOR_TRAITS_HPP
 
-#include "util/enable_if.hpp"
 #include "iterator/category.hpp"
+#include "util/enable_if.hpp"
 #include <cstddef>
 
 namespace ft
 {
 
-template<class Iter, bool>
-struct iterator_traits_impl
-{};
-
 template<class Iter>
-struct iterator_traits_impl<Iter, true>
+struct iterator_traits
 {
 	// clang-format off
 	typedef typename Iter::value_type        value_type;
@@ -23,10 +19,6 @@ struct iterator_traits_impl<Iter, true>
 	typedef typename Iter::iterator_category iterator_category;
 	// clang-format on
 };
-
-template<class Iter>
-struct iterator_traits : public iterator_traits_impl<Iter, true /* TODO: use enable_if */>
-{};
 
 template<class T>
 struct iterator_traits<T *>

@@ -25,26 +25,37 @@ Test(vector_cnst, fill_constructor)
 	const int n = 10;
 	const int val = 42;
 	ft::vector<int> v(n, val);
-	ft::vector<int> v_default_val(n);
 	std::vector<int> origin(n);
 
 	criterion::logging::info << "std::vector construct with size: size=" << origin.size()
 							 << " capacity=" << origin.capacity() << std::flush;
-	criterion::logging::info << "ft::vector construct with size: size=" << v_default_val.size()
-							 << " capacity=" << v_default_val.capacity() << std::flush;
+	criterion::logging::info << "ft::vector construct with size: size=" << v.size()
+							 << " capacity=" << v.capacity() << std::flush;
 	cr_expect_eq(v.size(), n);
-	cr_expect_eq(v_default_val.size(), n);
 	cr_expect_eq(v[n - 1], val);
-	cr_expect_eq(v_default_val[n - 1], int());
+}
+
+Test(vector_cnst, fill_constructor_default_value)
+{
+	const int n = 10;
+	ft::vector<int> v(n);
+	std::vector<int> origin(n);
+
+	criterion::logging::info << "std::vector construct with size: size=" << origin.size()
+							 << " capacity=" << origin.capacity() << std::flush;
+	criterion::logging::info << "ft::vector construct with size: size=" << v.size()
+							 << " capacity=" << v.capacity() << std::flush;
+	cr_expect_eq(v.size(), n);
+	cr_expect_eq(v[n - 1], int());
 }
 
 Test(vector_cnst, fill_constructor_by_zero)
 {
 	ft::vector<int> v(0);
-	std::vector<int> origin(0);
 
+	criterion::logging::info << "cap: " << v.capacity() << ", size: " << v.size() << std::flush;
 	cr_expect_eq(v.begin(), v.end());
-	cr_expect_eq(origin.begin().base(), v.begin());
+	cr_expect_eq(v.size(), 0);
 }
 
 Test(vector_cnst, copy_construct)
@@ -68,9 +79,15 @@ Test(vector_cnst, copy_construct)
 
 Test(vector_cnst, range_constructor)
 {
+	const int n = 5;
 	std::vector<int> v_iter = {1, 2, 3, 4, 5};
-	const int p_iter[] = {1, 2, 3, 4, 5};
-	cr_fail("ft::vector<int> v1(v_iter.begin(), v_iter.end());");
-	cr_fail("ft::vector<int> v2(p_iter.begin(), p_iter.end());");
-	cr_fail("to be eq: v1, v2");
+	const int p_iter[n] = {1, 2, 3, 4, 5};
+
+	ft::vector<int> v1(v_iter.begin(), v_iter.end());
+	ft::vector<int> v2(p_iter, p_iter + n);
+
+	cr_expect_eq(v1.size(), n);
+	cr_expect_eq(v1.size(), v2.size());
+	cr_expect_eq(v1[0], v2[0]);
+	cr_expect_eq(v1[n - 1], v2[n - 1]);
 }
