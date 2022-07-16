@@ -4,6 +4,7 @@
 #include "algorithm.hpp"
 #include "iterator/iterator_traits.hpp"
 #include "iterator/random_access_iterator.hpp"
+#include "iterator/reverse_iterator.hpp"
 #include "split_buffer.hpp"
 #include "util/enable_if.hpp"
 #include "util/is_integral.hpp"
@@ -27,6 +28,8 @@ public:
 	typedef typename allocator_type::const_reference            const_reference;
 	typedef random_access_iterator<pointer>                     iterator;
 	typedef random_access_iterator<const_pointer>               const_iterator;
+	typedef reverse_iterator<const_iterator>                    const_reverse_iterator;
+	typedef reverse_iterator<iterator>                          reverse_iterator;
 	typedef typename iterator_traits<iterator>::difference_type difference_type;
 	typedef typename allocator_type::size_type                  size_type;
 	// clang-format on
@@ -52,6 +55,10 @@ public:
 	const_iterator begin() const;
 	iterator end();
 	const_iterator end() const;
+	reverse_iterator rbegin();
+	const_reverse_iterator rbegin() const;
+	reverse_iterator rend();
+	const_reverse_iterator rend() const;
 
 	// element access
 	reference operator[](size_type n);
@@ -202,6 +209,30 @@ template<class T, class Allocator>
 typename vector<T, Allocator>::const_iterator vector<T, Allocator>::end() const
 {
 	return (end_);
+}
+
+template<class T, class Allocator>
+typename vector<T, Allocator>::reverse_iterator vector<T, Allocator>::rbegin()
+{
+	return (reverse_iterator(end()));
+}
+
+template<class T, class Allocator>
+typename vector<T, Allocator>::const_reverse_iterator vector<T, Allocator>::rbegin() const
+{
+	return (reverse_iterator(end()));
+}
+
+template<class T, class Allocator>
+typename vector<T, Allocator>::reverse_iterator vector<T, Allocator>::rend()
+{
+	return (reverse_iterator(begin()));
+}
+
+template<class T, class Allocator>
+typename vector<T, Allocator>::const_reverse_iterator vector<T, Allocator>::rend() const
+{
+	return (reverse_iterator(begin()));
 }
 
 // element access

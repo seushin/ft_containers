@@ -17,6 +17,7 @@ SRC += vector/resize.cpp
 SRC += vector/erase.cpp
 SRC += vector/swap.cpp
 SRC += vector/relational_op.cpp
+SRC += vector/reverse_iterator.cpp
 
 OBJ := $(addprefix $(D_OBJ)/, $(SRC:.cpp=.o))
 OBJ_SUBDIR := $(addprefix $(D_OBJ)/, vector)
@@ -37,7 +38,7 @@ endif
 
 .PHONY: test
 test: all
-	./$(NAME) --jobs 1 --verbose=0
+	./$(NAME) --jobs 1 #--verbose=0
 
 .PHONY: all
 all: $(NAME)
@@ -71,7 +72,6 @@ lint:
 FLAG_FILE := compile_flags.txt
 append_flags = $(foreach flag,$(1),$(shell echo "$(flag)" >> $(FLAG_FILE);))
 
-.PHONY: $(FLAG_FILE)
 $(FLAG_FILE):
 	$(call append_flags,$(INC))
 	$(call append_flags,$(CXXFLAGS))
