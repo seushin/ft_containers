@@ -4,7 +4,6 @@
 #include "iterator/iterator_traits.hpp"
 #include "util/enable_if.hpp"
 #include "util/is_integral.hpp"
-#include <iostream>
 
 namespace ft
 {
@@ -71,24 +70,6 @@ bool equal(InputIterator1 first1,
 	}
 	return (true);
 }
-
-template<class T, class U>
-struct less
-{
-	bool operator()(const T &a, const U &b) const
-	{
-		return (a < b);
-	}
-};
-
-template<class T, class U>
-struct greater
-{
-	bool operator()(const T &a, const U &b) const
-	{
-		return (b < a);
-	}
-};
 
 template<class InputIterator1, class InputIterator2>
 bool lexicographical_compare(

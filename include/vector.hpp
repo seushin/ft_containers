@@ -7,7 +7,6 @@
 #include "split_buffer.hpp"
 #include "util/enable_if.hpp"
 #include "util/is_integral.hpp"
-#include <algorithm>
 #include <memory>
 #include <stdexcept>
 
