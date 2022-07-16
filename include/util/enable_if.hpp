@@ -25,11 +25,11 @@ struct true_type
 };
 
 template<class T, class U>
-struct is_same : public false_type
+struct is_equal : public false_type
 {};
 
 template<class T>
-struct is_same<T, T> : public true_type
+struct is_equal<T, T> : public true_type
 {};
 
 } // namespace ft

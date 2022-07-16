@@ -7,6 +7,7 @@
 
 namespace ft
 {
+
 template<class Iter>
 class random_access_iterator
 {
@@ -32,7 +33,7 @@ public:
 	random_access_iterator(
 			const random_access_iterator<Iter2> &other,
 			typename enable_if<
-					is_same<value_type, typename random_access_iterator<Iter2>::value_type>::value,
+					is_equal<value_type, typename random_access_iterator<Iter2>::value_type>::value,
 					void>::type * = 0)
 		: curr_(other.base())
 	{}
