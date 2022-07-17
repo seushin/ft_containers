@@ -25,7 +25,8 @@ public:
 	reverse_iterator() : iter_() {}
 	reverse_iterator(iterator_type iter) : iter_(iter) {}
 	template<class Iter2>
-	reverse_iterator(const reverse_iterator<Iter2> &other) : iter_(other.base()) {}
+	reverse_iterator(const reverse_iterator<Iter2> &other) : iter_(other.base())
+	{}
 
 	template<class Iter2>
 	reverse_iterator &operator=(const reverse_iterator<Iter2> &rhs)
@@ -46,24 +47,29 @@ public:
 		Iter tmp = iter_;
 		return (*(--tmp));
 	}
+
 	pointer operator->() const
 	{
 		Iter tmp = iter_;
 		return ((--tmp).base());
 	}
+
 	reference operator[](difference_type n) const
 	{
 		return (*(*this + n));
 	}
+
 	reverse_iterator &operator+=(difference_type n)
 	{
 		iter_ -= n;
 		return (*this);
 	}
+
 	reverse_iterator operator+(difference_type n) const
 	{
 		return (reverse_iterator(iter_ - n));
 	}
+
 	reverse_iterator &operator++()
 	{
 		--iter_;
@@ -76,15 +82,18 @@ public:
 		--iter_;
 		return (tmp);
 	}
+
 	reverse_iterator &operator-=(difference_type n)
 	{
 		iter_ += n;
 		return (*this);
 	}
+
 	reverse_iterator operator-(difference_type n) const
 	{
 		return (reverse_iterator(iter_ + n));
 	}
+
 	reverse_iterator &operator--()
 	{
 		++iter_;

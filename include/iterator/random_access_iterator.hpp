@@ -28,7 +28,8 @@ public:
 	random_access_iterator(Iter iter) : curr_(iter) {}
 
 	template<class Iter2>
-	random_access_iterator(const random_access_iterator<Iter2> &other) : curr_(other.base()) {}
+	random_access_iterator(const random_access_iterator<Iter2> &other) : curr_(other.base())
+	{}
 
 	template<class Iter2>
 	random_access_iterator &operator=(const random_access_iterator<Iter2> &rhs)
