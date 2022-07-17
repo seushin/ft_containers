@@ -18,6 +18,7 @@ SRC += vector/erase.cpp
 SRC += vector/swap.cpp
 SRC += vector/relational_op.cpp
 SRC += vector/reverse_iterator.cpp
+SRC += vector/reserve.cpp
 
 OBJ := $(addprefix $(D_OBJ)/, $(SRC:.cpp=.o))
 OBJ_SUBDIR := $(addprefix $(D_OBJ)/, vector)
