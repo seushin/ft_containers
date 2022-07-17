@@ -105,7 +105,6 @@ private:
 	// util functions
 	void allocate_(size_type n);
 	void destruct_and_deallocate_();
-	void reallocate_(size_type n);
 	void construct_at_end_(size_type n);
 	void construct_at_end_(size_type n, const_reference val);
 	template<class InputIterator>
