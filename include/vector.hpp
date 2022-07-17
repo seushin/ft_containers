@@ -113,7 +113,7 @@ private:
 			typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last);
 	void destroy_at_end_(pointer new_end);
 	size_type recommend_size_(size_type new_size) const;
-	void swap_split_buffer(split_buffer<T, Allocator> &buf);
+	void swap_split_buffer_(split_buffer<T, Allocator> &buf);
 };
 
 template<class T, class Allocator>
@@ -340,7 +340,7 @@ void vector<T, Allocator>::reserve(size_type n)
 		split_buffer<T, Allocator> buf(n, alloc_);
 
 		buf.push(begin(), end());
-		swap_split_buffer(buf);
+		swap_split_buffer_(buf);
 	}
 }
 
@@ -417,7 +417,7 @@ vector<T, Allocator>::insert(iterator position, const value_type &val)
 		buf.push(begin(), position);
 		buf.push(1, val);
 		buf.push(position, end());
-		swap_split_buffer(buf);
+		swap_split_buffer_(buf);
 		position = begin() + old_size;
 	}
 	else
@@ -443,7 +443,7 @@ void vector<T, Allocator>::insert(iterator position, size_type n, const value_ty
 		buf.push(begin(), position);
 		buf.push(n, val);
 		buf.push(position, end());
-		swap_split_buffer(buf);
+		swap_split_buffer_(buf);
 	}
 	else
 	{
@@ -471,7 +471,7 @@ void vector<T, Allocator>::insert(
 		buf.push(begin(), position);
 		buf.push(first, last);
 		buf.push(position, end());
-		swap_split_buffer(buf);
+		swap_split_buffer_(buf);
 	}
 	else
 	{
@@ -586,7 +586,7 @@ void vector<T, Allocator>::destroy_at_end_(pointer new_end)
 }
 
 template<class T, class Allocator>
-void vector<T, Allocator>::swap_split_buffer(split_buffer<T, Allocator> &buf)
+void vector<T, Allocator>::swap_split_buffer_(split_buffer<T, Allocator> &buf)
 {
 	ft::swap(begin_, buf.begin_);
 	ft::swap(end_, buf.end_);
