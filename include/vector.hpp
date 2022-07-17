@@ -342,7 +342,7 @@ void vector<T, Allocator>::reserve(size_type n)
 {
 	if (n > capacity())
 	{
-		split_buffer<T, Allocator> buf(n, 0, alloc_);
+		split_buffer<T, Allocator> buf(n, alloc_);
 
 		buf.push(begin(), end());
 		swap_split_buffer(buf);
@@ -410,7 +410,7 @@ vector<T, Allocator>::insert(iterator position, const value_type &val)
 
 	if (new_size > capacity())
 	{
-		split_buffer<T, Allocator> buf(recommend_size_(new_size), 0, alloc_);
+		split_buffer<T, Allocator> buf(recommend_size_(new_size), alloc_);
 
 		buf.push(begin(), position);
 		buf.push(1, val);
@@ -436,7 +436,7 @@ void vector<T, Allocator>::insert(iterator position, size_type n, const value_ty
 
 	if (new_size > capacity())
 	{
-		split_buffer<T, Allocator> buf(recommend_size_(new_size), 0, alloc_);
+		split_buffer<T, Allocator> buf(recommend_size_(new_size), alloc_);
 
 		buf.push(begin(), position);
 		buf.push(n, val);
@@ -464,7 +464,7 @@ void vector<T, Allocator>::insert(
 
 	if (new_size > capacity())
 	{
-		split_buffer<T, Allocator> buf(recommend_size_(new_size), 0, alloc_);
+		split_buffer<T, Allocator> buf(recommend_size_(new_size), alloc_);
 
 		buf.push(begin(), position);
 		buf.push(first, last);
@@ -586,7 +586,7 @@ void vector<T, Allocator>::destroy_at_end_(pointer new_end)
 template<class T, class Allocator>
 void vector<T, Allocator>::swap_split_buffer(split_buffer<T, Allocator> &buf)
 {
-	ft::swap(begin_, buf.start_);
+	ft::swap(begin_, buf.begin_);
 	ft::swap(end_, buf.end_);
 	ft::swap(end_cap_, buf.end_cap_);
 }

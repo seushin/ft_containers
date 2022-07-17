@@ -28,14 +28,13 @@ public:
 	typedef typename allocator_type::size_type        size_type;
 	// clang-format on
 
-	pointer start_;
 	pointer begin_;
 	pointer end_;
 	pointer end_cap_;
 	allocator_type alloc_;
 
 	split_buffer();
-	split_buffer(size_type new_size, size_type old_size, allocator_type &alloc);
+	split_buffer(size_type new_size, allocator_type &alloc);
 	~split_buffer();
 	size_type capacity() const;
 
@@ -50,34 +49,32 @@ public:
 };
 
 template<class T, class Allocator>
-split_buffer<T, Allocator>::split_buffer() : start_(0), begin_(0), end_(0), end_cap_(0), alloc_()
+split_buffer<T, Allocator>::split_buffer() : begin_(0), end_(0), end_cap_(0), alloc_()
 {}
 
 template<class T, class Allocator>
 split_buffer<T, Allocator>::split_buffer(size_type new_size,
-										 size_type old_size,
 										 allocator_type &alloc)
-	: start_(0), begin_(0), end_(0), end_cap_(0), alloc_(alloc)
+	: begin_(0), end_(0), end_cap_(0), alloc_(alloc)
 {
 	if (new_size > 0)
 	{
-		start_ = alloc_.allocate(new_size);
-		begin_ = end_ = start_ + old_size;
-		end_cap_ = start_ + new_size;
+		begin_ = end_ = alloc_.allocate(new_size);
+		end_cap_ = begin_ + new_size;
 	}
 }
 
 template<class T, class Allocator>
 split_buffer<T, Allocator>::~split_buffer()
 {
-	destroy_at_end_(start_);
-	alloc_.deallocate(start_, capacity());
+	destroy_at_end_(begin_);
+	alloc_.deallocate(begin_, capacity());
 }
 
 template<class T, class Allocator>
 typename split_buffer<T, Allocator>::size_type split_buffer<T, Allocator>::capacity() const
 {
-	return (static_cast<size_type>(end_cap_ - start_));
+	return (static_cast<size_type>(end_cap_ - begin_));
 }
 
 template<class T, class Allocator>
