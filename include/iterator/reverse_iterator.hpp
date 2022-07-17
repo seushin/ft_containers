@@ -16,7 +16,7 @@ public:
 	// clang-format off
 	typedef Iter                                              iterator_type;
 	typedef typename iterator_traits<Iter>::iterator_category iterator_category;
-	typedef typename iterator_traits<Iter>::difference_type   value_type;
+	typedef typename iterator_traits<Iter>::value_type        value_type;
 	typedef typename iterator_traits<Iter>::difference_type   difference_type;
 	typedef typename iterator_traits<Iter>::reference         reference;
 	typedef typename iterator_traits<Iter>::pointer           pointer;
