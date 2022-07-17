@@ -169,15 +169,10 @@ vector<T, Allocator> &vector<T, Allocator>::operator=(const vector &rhs)
 	if (this == &rhs)
 		return (*this);
 
-	clear();
-	reserve(rhs.capacity());
-
+	destruct_and_deallocate_();
 	alloc_ = rhs.alloc_;
-
-	for (const_iterator first = rhs.begin(), last = rhs.end(); first != last; ++first)
-	{
-		construct_at_end_(1, *first);
-	}
+	allocate_(rhs.capacity());
+	construct_at_end_(rhs.begin(), rhs.end());
 	return (*this);
 }
 
