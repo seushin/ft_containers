@@ -105,7 +105,6 @@ private:
 	// util functions
 	void allocate_(size_type n);
 	void destruct_and_deallocate_();
-	void reallocate_(size_type n);
 	void construct_at_end_(size_type n);
 	void construct_at_end_(size_type n, const_reference val);
 	template<class InputIterator>
@@ -114,7 +113,7 @@ private:
 			typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last);
 	void destroy_at_end_(pointer new_end);
 	size_type recommend_size_(size_type new_size) const;
-	void swap_split_buffer(split_buffer<T, Allocator> &buf);
+	void swap_split_buffer_(split_buffer<T, Allocator> &buf);
 };
 
 template<class T, class Allocator>
@@ -169,14 +168,10 @@ vector<T, Allocator> &vector<T, Allocator>::operator=(const vector &rhs)
 	if (this == &rhs)
 		return (*this);
 
+	destruct_and_deallocate_();
 	alloc_ = rhs.alloc_;
 	allocate_(rhs.capacity());
-
-	size_type sz = rhs.size();
-	for (size_type i = 0; i < sz; i++)
-	{
-		construct_at_end_(1, rhs[i]);
-	}
+	construct_at_end_(rhs.begin(), rhs.end());
 	return (*this);
 }
 
@@ -319,7 +314,8 @@ void vector<T, Allocator>::resize(size_type n, value_type val)
 	}
 	else if (n > sz)
 	{
-		reserve(n);
+		if (n > capacity())
+			reserve(recommend_size_(n));
 		construct_at_end_(n - sz, val);
 	}
 }
@@ -341,10 +337,10 @@ void vector<T, Allocator>::reserve(size_type n)
 {
 	if (n > capacity())
 	{
-		split_buffer<T, Allocator> buf(n, 0, alloc_);
+		split_buffer<T, Allocator> buf(n, alloc_);
 
-		buf.construct_at_end_(begin(), end());
-		swap_split_buffer(buf);
+		buf.push(begin(), end());
+		swap_split_buffer_(buf);
 	}
 }
 
@@ -356,10 +352,17 @@ void vector<T, Allocator>::assign(
 		InputIterator first,
 		typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last)
 {
-	clear();
-	for (; first != last; ++first)
+	size_type new_size = static_cast<size_type>(ft::distance(first, last));
+	if (new_size <= capacity())
 	{
-		push_back(*first);
+		clear();
+		construct_at_end_(first, last);
+	}
+	else
+	{
+		destruct_and_deallocate_();
+		allocate_(recommend_size_(new_size));
+		construct_at_end_(first, last);
 	}
 }
 
@@ -409,12 +412,12 @@ vector<T, Allocator>::insert(iterator position, const value_type &val)
 
 	if (new_size > capacity())
 	{
-		split_buffer<T, Allocator> buf(recommend_size_(new_size), old_size, alloc_);
+		split_buffer<T, Allocator> buf(recommend_size_(new_size), alloc_);
 
-		buf.construct_at_end_(1, val);
-		buf.construct_at_end_(position, end());
-		buf.copy_origin_element_(begin(), position);
-		swap_split_buffer(buf);
+		buf.push(begin(), position);
+		buf.push(1, val);
+		buf.push(position, end());
+		swap_split_buffer_(buf);
 		position = begin() + old_size;
 	}
 	else
@@ -432,16 +435,15 @@ template<class T, class Allocator>
 void vector<T, Allocator>::insert(iterator position, size_type n, const value_type &val)
 {
 	size_type new_size = size() + n;
-	size_type old_size = static_cast<size_type>(ft::distance(begin(), position));
 
 	if (new_size > capacity())
 	{
-		split_buffer<T, Allocator> buf(recommend_size_(new_size), old_size, alloc_);
+		split_buffer<T, Allocator> buf(recommend_size_(new_size), alloc_);
 
-		buf.construct_at_end_(n, val);
-		buf.construct_at_end_(position, end());
-		buf.copy_origin_element_(begin(), position);
-		swap_split_buffer(buf);
+		buf.push(begin(), position);
+		buf.push(n, val);
+		buf.push(position, end());
+		swap_split_buffer_(buf);
 	}
 	else
 	{
@@ -461,16 +463,15 @@ void vector<T, Allocator>::insert(
 		typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last)
 {
 	size_type new_size = size() + ft::distance(first, last);
-	size_type old_size = static_cast<size_type>(ft::distance(begin(), position));
 
 	if (new_size > capacity())
 	{
-		split_buffer<T, Allocator> buf(recommend_size_(new_size), old_size, alloc_);
+		split_buffer<T, Allocator> buf(recommend_size_(new_size), alloc_);
 
-		buf.construct_at_end_(first, last);
-		buf.construct_at_end_(position, end());
-		buf.copy_origin_element_(begin(), position);
-		swap_split_buffer(buf);
+		buf.push(begin(), position);
+		buf.push(first, last);
+		buf.push(position, end());
+		swap_split_buffer_(buf);
 	}
 	else
 	{
@@ -585,9 +586,9 @@ void vector<T, Allocator>::destroy_at_end_(pointer new_end)
 }
 
 template<class T, class Allocator>
-void vector<T, Allocator>::swap_split_buffer(split_buffer<T, Allocator> &buf)
+void vector<T, Allocator>::swap_split_buffer_(split_buffer<T, Allocator> &buf)
 {
-	ft::swap(begin_, buf.start_);
+	ft::swap(begin_, buf.begin_);
 	ft::swap(end_, buf.end_);
 	ft::swap(end_cap_, buf.end_cap_);
 }

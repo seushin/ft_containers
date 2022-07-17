@@ -1,15 +1,15 @@
+#include <deque>
 #include <iostream>
 #include <string>
-#include <deque>
 #ifdef USE_STD //CREATE A REAL STL EXAMPLE
-	#include <map>
-	#include <stack>
-	#include <vector>
-	namespace ft = std;
+#include <map>
+#include <stack>
+#include <vector>
+namespace ft = std;
 #else
-	#include <map.hpp>
-	#include <stack.hpp>
-	#include <vector.hpp>
+#include <map.hpp>
+#include <stack.hpp>
+#include <vector.hpp>
 #endif
 
 #include <stdlib.h>
@@ -22,7 +22,6 @@ struct Buffer
 	char buff[BUFFER_SIZE];
 };
 
-
 #define COUNT (MAX_RAM / (int)sizeof(Buffer))
 
 template<typename T>
@@ -30,8 +29,11 @@ class MutantStack : public ft::stack<T>
 {
 public:
 	MutantStack() {}
-	MutantStack(const MutantStack<T>& src) { *this = src; }
-	MutantStack<T>& operator=(const MutantStack<T>& rhs) 
+	MutantStack(const MutantStack<T> &src)
+	{
+		*this = src;
+	}
+	MutantStack<T> &operator=(const MutantStack<T> &rhs)
 	{
 		this->c = rhs.c;
 		return *this;
@@ -40,11 +42,18 @@ public:
 
 	typedef typename ft::stack<T>::container_type::iterator iterator;
 
-	iterator begin() { return this->c.begin(); }
-	iterator end() { return this->c.end(); }
+	iterator begin()
+	{
+		return this->c.begin();
+	}
+	iterator end()
+	{
+		return this->c.end();
+	}
 };
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv)
+{
 	if (argc != 2)
 	{
 		std::cerr << "Usage: ./test seed" << std::endl;
@@ -80,14 +89,14 @@ int main(int argc, char** argv) {
 		{
 			const int idx = rand() % COUNT;
 			vector_buffer.at(idx);
-			std::cerr << "Error: THIS VECTOR SHOULD BE EMPTY!!" <<std::endl;
+			std::cerr << "Error: THIS VECTOR SHOULD BE EMPTY!!" << std::endl;
 		}
 	}
-	catch(const std::exception& e)
+	catch (const std::exception &e)
 	{
 		//NORMAL ! :P
 	}
-	
+
 	for (int i = 0; i < COUNT; ++i)
 	{
 		map_int.insert(ft::make_pair(rand(), rand()));
