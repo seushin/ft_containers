@@ -93,7 +93,7 @@ public:
 		curr_ += n;
 		return (*this);
 	}
-	random_access_iterator operator+(const difference_type &n)
+	random_access_iterator operator+(const difference_type &n) const
 	{
 		random_access_iterator it(*this);
 
@@ -106,7 +106,7 @@ public:
 		curr_ -= n;
 		return (*this);
 	}
-	random_access_iterator operator-(const difference_type &n)
+	random_access_iterator operator-(const difference_type &n) const
 	{
 		random_access_iterator it(*this);
 
