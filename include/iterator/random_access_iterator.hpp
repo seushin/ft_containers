@@ -76,7 +76,7 @@ public:
 		return (copy);
 	}
 
-	reference operator[](const difference_type &n)
+	reference operator[](const difference_type &n) const
 	{
 		return (curr_[n]);
 	}
