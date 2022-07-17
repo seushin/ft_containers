@@ -55,4 +55,9 @@ Test(vector_iter, iter_to_const_iter)
 
 	ite = v.end();
 	cite = ite;
+
+	*itb = 42;
+
+	cr_expect_eq(*itb, *citb);
+	cr_expect_eq(itb, citb);
 }
