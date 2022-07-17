@@ -39,10 +39,10 @@ public:
 	~split_buffer();
 	size_type capacity() const;
 
-	void construct_at_end_(size_type n);
-	void construct_at_end_(size_type n, const_reference val);
+	void push(size_type n);
+	void push(size_type n, const_reference val);
 	template<class InputIterator>
-	void construct_at_end_(
+	void push(
 			InputIterator first,
 			typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last);
 	void destroy_at_end_(pointer new_end);
@@ -81,7 +81,7 @@ typename split_buffer<T, Allocator>::size_type split_buffer<T, Allocator>::capac
 }
 
 template<class T, class Allocator>
-void split_buffer<T, Allocator>::construct_at_end_(size_type n)
+void split_buffer<T, Allocator>::push(size_type n)
 {
 	const_pointer new_end = end_ + n;
 	for (pointer &pos = end_; pos != new_end; ++pos)
@@ -91,7 +91,7 @@ void split_buffer<T, Allocator>::construct_at_end_(size_type n)
 }
 
 template<class T, class Allocator>
-void split_buffer<T, Allocator>::construct_at_end_(size_type n, const_reference val)
+void split_buffer<T, Allocator>::push(size_type n, const_reference val)
 {
 	const_pointer new_end = end_ + n;
 
@@ -103,7 +103,7 @@ void split_buffer<T, Allocator>::construct_at_end_(size_type n, const_reference 
 
 template<class T, class Allocator>
 template<class InputIterator>
-void split_buffer<T, Allocator>::construct_at_end_(
+void split_buffer<T, Allocator>::push(
 		InputIterator first,
 		typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last)
 {

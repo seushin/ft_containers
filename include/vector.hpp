@@ -344,7 +344,7 @@ void vector<T, Allocator>::reserve(size_type n)
 	{
 		split_buffer<T, Allocator> buf(n, 0, alloc_);
 
-		buf.construct_at_end_(begin(), end());
+		buf.push(begin(), end());
 		swap_split_buffer(buf);
 	}
 }
@@ -412,9 +412,9 @@ vector<T, Allocator>::insert(iterator position, const value_type &val)
 	{
 		split_buffer<T, Allocator> buf(recommend_size_(new_size), 0, alloc_);
 
-		buf.construct_at_end_(begin(), position);
-		buf.construct_at_end_(1, val);
-		buf.construct_at_end_(position, end());
+		buf.push(begin(), position);
+		buf.push(1, val);
+		buf.push(position, end());
 		swap_split_buffer(buf);
 		position = begin() + old_size;
 	}
@@ -438,9 +438,9 @@ void vector<T, Allocator>::insert(iterator position, size_type n, const value_ty
 	{
 		split_buffer<T, Allocator> buf(recommend_size_(new_size), 0, alloc_);
 
-		buf.construct_at_end_(begin(), position);
-		buf.construct_at_end_(n, val);
-		buf.construct_at_end_(position, end());
+		buf.push(begin(), position);
+		buf.push(n, val);
+		buf.push(position, end());
 		swap_split_buffer(buf);
 	}
 	else
@@ -466,9 +466,9 @@ void vector<T, Allocator>::insert(
 	{
 		split_buffer<T, Allocator> buf(recommend_size_(new_size), 0, alloc_);
 
-		buf.construct_at_end_(begin(), position);
-		buf.construct_at_end_(first, last);
-		buf.construct_at_end_(position, end());
+		buf.push(begin(), position);
+		buf.push(first, last);
+		buf.push(position, end());
 		swap_split_buffer(buf);
 	}
 	else
