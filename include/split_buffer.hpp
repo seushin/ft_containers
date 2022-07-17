@@ -41,9 +41,8 @@ public:
 	void push(size_type n);
 	void push(size_type n, const_reference val);
 	template<class InputIterator>
-	void push(
-			InputIterator first,
-			typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last);
+	void push(InputIterator first,
+			  typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last);
 	void destroy_at_end_(pointer new_end);
 	size_type recommend_size_(size_type new_size) const;
 };
@@ -53,8 +52,7 @@ split_buffer<T, Allocator>::split_buffer() : begin_(0), end_(0), end_cap_(0), al
 {}
 
 template<class T, class Allocator>
-split_buffer<T, Allocator>::split_buffer(size_type new_size,
-										 allocator_type &alloc)
+split_buffer<T, Allocator>::split_buffer(size_type new_size, allocator_type &alloc)
 	: begin_(0), end_(0), end_cap_(0), alloc_(alloc)
 {
 	if (new_size > 0)
