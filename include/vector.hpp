@@ -220,7 +220,7 @@ typename vector<T, Allocator>::reverse_iterator vector<T, Allocator>::rbegin()
 template<class T, class Allocator>
 typename vector<T, Allocator>::const_reverse_iterator vector<T, Allocator>::rbegin() const
 {
-	return (reverse_iterator(end()));
+	return (const_reverse_iterator(end()));
 }
 
 template<class T, class Allocator>
@@ -232,7 +232,7 @@ typename vector<T, Allocator>::reverse_iterator vector<T, Allocator>::rend()
 template<class T, class Allocator>
 typename vector<T, Allocator>::const_reverse_iterator vector<T, Allocator>::rend() const
 {
-	return (reverse_iterator(begin()));
+	return (const_reverse_iterator(begin()));
 }
 
 // element access
