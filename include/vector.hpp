@@ -320,7 +320,8 @@ void vector<T, Allocator>::resize(size_type n, value_type val)
 	}
 	else if (n > sz)
 	{
-		reserve(n);
+		if (n > capacity())
+			reserve(recommend_size_(n));
 		construct_at_end_(n - sz, val);
 	}
 }
@@ -357,10 +358,17 @@ void vector<T, Allocator>::assign(
 		InputIterator first,
 		typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last)
 {
-	clear();
-	for (; first != last; ++first)
+	size_type new_size = static_cast<size_type>(ft::distance(first, last));
+	if (new_size <= capacity())
 	{
-		push_back(*first);
+		clear();
+		construct_at_end_(first, last);
+	}
+	else
+	{
+		destruct_and_deallocate_();
+		allocate_(recommend_size_(new_size));
+		construct_at_end_(first, last);
 	}
 }
 
