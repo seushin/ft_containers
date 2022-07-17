@@ -45,7 +45,7 @@ Test(vector_rev_iter, has_const_iterator)
 		cr_expect_eq(*rbegin, value);
 }
 
-Test(vector_rev_iter, iter_to_const_iter)
+Test(vector_rev_iter, should_convert_iter_to_const_iter)
 {
 	ft::vector<int> v(10);
 	ft::vector<int>::reverse_iterator ritb = v.rbegin();
@@ -60,4 +60,33 @@ Test(vector_rev_iter, iter_to_const_iter)
 
 	cr_expect_eq(*ritb, *critb);
 	cr_expect_eq(ritb, critb);
+}
+
+Test(vector_rev_iter, should_compare)
+{
+	ft::vector<int> v(10, 42);
+	ft::vector<int>::reverse_iterator rbegin, rend;
+
+	rbegin = v.rbegin();
+	rend = v.rend();
+
+	cr_expect_neq(rbegin, rend);
+	cr_expect_eq(rbegin + v.size(), rend);
+	cr_expect(rbegin < rend);
+	cr_expect_not(rbegin > rend);
+}
+
+Test(vector_rev_iter, should_compare_mix_const)
+{
+	ft::vector<int> v(10, 42);
+	ft::vector<int>::reverse_iterator rbegin;
+	ft::vector<int>::const_reverse_iterator rend;
+
+	rbegin = v.rbegin();
+	rend = v.rend();
+
+	cr_expect_neq(rbegin, rend);
+	cr_expect_eq(rbegin + v.size(), rend);
+	cr_expect(rbegin < rend);
+	cr_expect_not(rbegin > rend);
 }
