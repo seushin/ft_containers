@@ -27,20 +27,13 @@ public:
 
 	random_access_iterator(Iter iter) : curr_(iter) {}
 
-	random_access_iterator(const random_access_iterator &other) : curr_(other.curr_) {}
+	template<class Iter2>
+	random_access_iterator(const random_access_iterator<Iter2> &other) : curr_(other.base()) {}
 
 	template<class Iter2>
-	random_access_iterator(
-			const random_access_iterator<Iter2> &other,
-			typename enable_if<
-					is_equal<value_type, typename random_access_iterator<Iter2>::value_type>::value,
-					void>::type * = 0)
-		: curr_(other.base())
-	{}
-
-	random_access_iterator &operator=(const random_access_iterator &rhs)
+	random_access_iterator &operator=(const random_access_iterator<Iter2> &rhs)
 	{
-		curr_ = rhs.curr_;
+		curr_ = rhs.base();
 
 		return (*this);
 	}

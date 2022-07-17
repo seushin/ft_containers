@@ -25,18 +25,15 @@ public:
 	reverse_iterator() : iter_() {}
 	reverse_iterator(iterator_type iter) : iter_(iter) {}
 	template<class Iter2>
-	reverse_iterator(
-			const reverse_iterator<Iter2> &other,
-			typename enable_if<
-					is_equal<value_type, typename reverse_iterator<Iter2>::value_type>::value,
-					void>::type * = 0)
-		: iter_(other.base())
-	{}
-	reverse_iterator &operator=(const reverse_iterator &rhs)
+	reverse_iterator(const reverse_iterator<Iter2> &other) : iter_(other.base()) {}
+
+	template<class Iter2>
+	reverse_iterator &operator=(const reverse_iterator<Iter2> &rhs)
 	{
-		iter_ = rhs.iter_;
+		iter_ = rhs.base();
 		return (*this);
 	}
+
 	~reverse_iterator() {}
 
 	iterator_type base() const
