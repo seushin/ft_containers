@@ -45,10 +45,6 @@ public:
 	void construct_at_end_(
 			InputIterator first,
 			typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last);
-	template<class InputIterator>
-	void copy_origin_element_(
-			InputIterator first,
-			typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last);
 	void destroy_at_end_(pointer new_end);
 	size_type recommend_size_(size_type new_size) const;
 };
@@ -117,18 +113,6 @@ void split_buffer<T, Allocator>::construct_at_end_(
 	{
 		alloc_.construct(pos, *first);
 		++first;
-	}
-}
-
-template<class T, class Allocator>
-template<class InputIterator>
-void split_buffer<T, Allocator>::copy_origin_element_(
-		InputIterator first,
-		typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last)
-{
-	for (pointer pos = start_; pos != end_ && first != last; ++pos, ++first)
-	{
-		alloc_.construct(pos, *first);
 	}
 }
 
