@@ -54,3 +54,22 @@ Test(vector_erase, erase_range)
 	cr_expect_eq(v.size(), old_size - n);
 	cr_expect_eq(v[0], n);
 }
+
+Test(vector_erase, should_not_effect_capacity)
+{
+	ft::vector<int> v(10, 42);
+	int old_cap;
+
+	old_cap = v.capacity();
+
+	v.erase(v.begin(), v.end());
+
+	cr_expect_eq(v.capacity(), old_cap);
+
+	v.assign(100, 42);
+	old_cap = v.capacity();
+
+	v.erase(v.begin() + 10);
+
+	cr_expect_eq(v.capacity(), old_cap);
+}

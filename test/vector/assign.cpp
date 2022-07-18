@@ -17,6 +17,21 @@ Test(vector_assign, should_change_size_correctly)
 	cr_expect_eq(target.size(), v.size());
 }
 
+Test(vector_assign, should_reallocate)
+{
+	ft::vector<int> target(10, 0);
+	ft::vector<int> v(100, 42);
+	ft::vector<int>::const_iterator old_begin;
+	int old_cap;
+
+	old_begin = target.begin();
+	old_cap = target.capacity();
+	target.assign(v.begin(), v.end());
+
+	cr_expect_neq(target.begin(), old_begin);
+	cr_expect_neq(target.capacity(), old_cap);
+}
+
 Test(vector_assign, call_by_iter)
 {
 	ft::vector<int> target(5, 0);

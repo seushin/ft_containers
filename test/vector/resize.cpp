@@ -29,6 +29,21 @@ Test(vector_resize, should_construct)
 	cr_expect_eq(v[10], new_value);
 }
 
+Test(vector_resize, should_reallocate)
+{
+	ft::vector<int> v(10, 42);
+	const int new_size = 100;
+	const int new_value = 21;
+	int old_cap;
+
+	old_cap = v.capacity();
+
+	v.resize(new_size, new_value);
+
+	cr_expect_eq(v.size(), new_size);
+	cr_expect_neq(v.capacity(), old_cap);
+}
+
 Test(vector_resize, should_not_anything)
 {
 	ft::vector<int> v(10, 42);

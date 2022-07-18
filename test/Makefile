@@ -70,7 +70,7 @@ re: fclean all
 
 .PHONY: lint
 lint:
-	find $(D_SRC) $(D_INC) -name '*.cpp' -o -name '*.hpp' | xargs clang-format -i
+	find $(D_SRC) -name '*.cpp' -o -name '*.hpp' | xargs clang-format -i
 
 FLAG_FILE := compile_flags.txt
 append_flags = $(foreach flag,$(1),$(shell echo "$(flag)" >> $(FLAG_FILE);))
