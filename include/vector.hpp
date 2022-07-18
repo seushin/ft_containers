@@ -5,9 +5,8 @@
 #include "iterator/iterator_traits.hpp"
 #include "iterator/random_access_iterator.hpp"
 #include "iterator/reverse_iterator.hpp"
-#include "split_buffer.hpp"
-#include "util/enable_if.hpp"
-#include "util/is_integral.hpp"
+#include "utility.hpp"
+
 #include <memory>
 #include <stdexcept>
 
