@@ -41,6 +41,101 @@ public:
 	friend bool operator<(const stack<T1, C1> &lhs, const stack<T1, C1> &rhs);
 };
 
+template<class T, class Container>
+stack<T, Container>::stack() : c()
+{}
+
+template<class T, class Container>
+stack<T, Container>::stack(const stack &other) : c(other.c)
+{}
+
+template<class T, class Container>
+stack<T, Container>::stack(const Container &x) : c(x)
+{}
+
+template<class T, class Container>
+stack<T, Container> &stack<T, Container>::operator=(const stack &rhs)
+{
+	c = rhs.c;
+	return (*this);
+}
+
+template<class T, class Container>
+stack<T, Container>::~stack()
+{}
+
+template<class T, class Container>
+bool stack<T, Container>::empty() const
+{
+	return (c.size() == 0);
+}
+
+template<class T, class Container>
+typename stack<T, Container>::size_type stack<T, Container>::size() const
+{
+	return (c.size());
+}
+
+template<class T, class Container>
+typename stack<T, Container>::value_type &stack<T, Container>::top()
+{
+	return (c.back());
+}
+
+template<class T, class Container>
+const typename stack<T, Container>::value_type &stack<T, Container>::top() const
+{
+	return (c.back());
+}
+
+template<class T, class Container>
+void stack<T, Container>::push(const value_type &val)
+{
+	c.push_back(val);
+}
+
+template<class T, class Container>
+void stack<T, Container>::pop()
+{
+	c.pop_back();
+}
+
+template<class T1, class C1>
+bool operator==(const stack<T1, C1> &lhs, const stack<T1, C1> &rhs)
+{
+	return (lhs.c == rhs.c);
+}
+
+template<class T1, class C1>
+bool operator!=(const stack<T1, C1> &lhs, const stack<T1, C1> &rhs)
+{
+	return (!(lhs == rhs));
+}
+
+template<class T1, class C1>
+bool operator<(const stack<T1, C1> &lhs, const stack<T1, C1> &rhs)
+{
+	return (lhs.c < rhs.c);
+}
+
+template<class T1, class C1>
+bool operator<=(const stack<T1, C1> &lhs, const stack<T1, C1> &rhs)
+{
+	return (!(rhs < lhs));
+}
+
+template<class T1, class C1>
+bool operator>(const stack<T1, C1> &lhs, const stack<T1, C1> &rhs)
+{
+	return (rhs < lhs);
+}
+
+template<class T1, class C1>
+bool operator>=(const stack<T1, C1> &lhs, const stack<T1, C1> &rhs)
+{
+	return (!(lhs < rhs));
+}
+
 } // namespace ft
 
 #endif // !STACK_HPP
