@@ -20,8 +20,10 @@ SRC += vector/relational_op.cpp
 SRC += vector/reverse_iterator.cpp
 SRC += vector/reserve.cpp
 
+SRC += stack/constructor.cpp
+
 OBJ := $(addprefix $(D_OBJ)/, $(SRC:.cpp=.o))
-OBJ_SUBDIR := $(addprefix $(D_OBJ)/, vector)
+OBJ_SUBDIR := $(addprefix $(D_OBJ)/, vector stack)
 
 DEP := $(OBJ:.o=.d)
 
