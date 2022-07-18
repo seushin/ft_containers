@@ -34,11 +34,11 @@ public:
 	typedef typename allocator_type::size_type                  size_type;
 	// clang-format on
 
-	vector();
-	vector(const allocator_type &alloc);
+	explicit vector();
+	explicit vector(const allocator_type &alloc);
 
-	vector(size_type n);
-	vector(size_type n, const value_type &val);
+	explicit vector(size_type n);
+	explicit vector(size_type n, const value_type &val);
 
 	template<class InputIterator>
 	vector(InputIterator first,
