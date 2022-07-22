@@ -83,6 +83,28 @@ void tree_remove(NodePtr root, NodePtr x)
 	}
 }
 
+template<class T>
+struct tree_node
+{
+	tree_node *parent;
+	tree_node *left;
+	tree_node *right;
+	T value;
+
+	tree_node() : parent(0), left(0), right(0), value() {}
+	tree_node(const T &val) : parent(0), left(0), right(0), value(val) {}
+	tree_node(const tree_node &x) : parent(x.parent), left(x.left), right(x.right), value(x.value) {}
+	tree_node &operator=(const tree_node &rhs)
+	{
+		parent = rhs.parent;
+		left = rhs.left;
+		right = rhs.right;
+		value = rhs.value;
+		return (*this);
+	}
+	~tree_node();
+};
+
 struct tree_iterator
 {};
 
@@ -97,8 +119,27 @@ public:
 	typedef T         value_type;
 	typedef Compare   value_compare;
 	typedef Allocator allocator_type;
+
+	typedef tree_node<T> node;
+	typedef node         *node_pointer;
 	// clang-format on
+
+	tree();
+	tree(const tree &other);
+	tree &operator=(const tree &rhs);
+	~tree();
+
+private:
+	node base_;
+
+	node_pointer root() const
+	{
+		return (base_.left);
+	}
 };
+
+template<class T, class Compare, class Allocator>
+tree<T, Compare, Allocator>::tree() : base_() {}
 
 } // namespace ft
 
