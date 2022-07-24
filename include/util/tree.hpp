@@ -306,55 +306,66 @@ class tree : protected tree_base<T, Allocator>
 private:
 	// clang-format off
 	typedef tree_base<T, Allocator>                  base_;
-	typedef typename base_::node                     node;
-	typedef typename base_::node_pointer             node_pointer;
 
 public:
 	typedef T                                        value_type;
 	typedef Compare                                  value_compare;
+	typedef typename select_first<value_type>::type  key_type;
 	typedef Allocator                                allocator_type;
 	typedef typename base_::node_allocator           node_allocator;
+	typedef typename base_::node_pointer             node_pointer;
 	typedef tree_iterator<value_type>                iterator;
+	typedef tree_iterator<value_type>                const_iterator; // FIX
 	typedef typename allocator_type::pointer         pointer;
 	typedef typename allocator_type::const_pointer   const_pointer;
 	typedef typename allocator_type::difference_type difference_type;
 	typedef typename allocator_type::size_type       size_type;
-
-private:
-	typedef typename select_first<value_type>::type  key_type;
 	// clang-format on
 
+private:
+	size_type size_;
+
+public:
 	tree();
 	tree(const tree &other);
 	tree &operator=(const tree &rhs);
 	~tree();
 
+	// capacity
+	bool empty() const;
+	size_type size() const;
+	size_type max_size() const;
+
+	// modifier
+	pair<iterator, bool> insert(const value_type &val);
+	iterator insert(iterator position, const value_type &val);
+	template<class InputIterator>
+	void insert(InputIterator first, InputIterator last);
+
+	void erase(iterator position);
+	size_type erase(const key_type &key);
+	void erase(iterator first, iterator last);
+
+	void swap(tree &x);
+
+	void clear();
+
+	// operation
+	iterator find(const key_type &key);
+	size_type count(const key_type &key);
+	iterator lower_bound(const key_type &key);
+	const_iterator lower_bound(const key_type &key) const;
+	iterator upper_bound(const key_type &key);
+	const_iterator upper_bound(const key_type &key) const;
+	pair<iterator, iterator> equal_range(const key_type &key);
+	pair<const_iterator, const_iterator> equal_range(const key_type &key) const;
+
 protected:
-	node_pointer &root() const
-	{
-		return (this->end_node_->left);
-	}
+	node_pointer &root() const;
 
-	node_pointer create_node(const value_type &val)
-	{
-		node_pointer new_node = this->allocate_one_();
-
-		try
-		{
-			this->node_alloc_.construct(new_node, node(val));
-		}
-		catch (...)
-		{
-			this->deallocate_one_(new_node);
-		}
-		return (new_node);
-	}
-
-	void destroy_node(node_pointer x)
-	{
-		this->node_alloc_.destroy(x);
-		this->deallocate_one_(x);
-	}
+	node_pointer create_node(const value_type &val);
+	void destroy_node(node_pointer x);
+	void destroy(node_pointer x);
 };
 
 template<class T, class Compare, class Allocator>
