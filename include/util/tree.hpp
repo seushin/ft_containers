@@ -2,10 +2,23 @@
 #define TREE_HPP
 
 #include "iterator/category.hpp"
+#include "util/pair.hpp"
 #include <cstddef>
 
 namespace ft
 {
+
+template<class T>
+struct select_first
+{
+	typedef T type;
+};
+
+template<class Key, class T>
+struct select_first<pair<Key, T> >
+{
+	typedef Key type;
+};
 
 template<class NodePtr>
 NodePtr tree_min_node(NodePtr x)
@@ -244,11 +257,11 @@ class tree_base
 {
 public:
 	// clang-format off
-	typedef tree_node<T>                                          node;
-	typedef node*                                                 node_pointer;
-	typedef typename node::value_type                             value_type;
+	typedef T                                                     value_type;
 	typedef Allocator                                             allocator_type;
+	typedef tree_node<value_type>                                 node;
 	typedef typename allocator_type::template rebind<node>::other node_allocator;
+	typedef typename node_allocator::pointer                      node_pointer;
 	// clang-format on
 
 	tree_base() : node_alloc_()
@@ -292,16 +305,23 @@ class tree : protected tree_base<T, Allocator>
 {
 private:
 	// clang-format off
-	typedef tree_base<T, Allocator>        base_;
-	typedef typename base_::node           node;
-	typedef typename base_::node_pointer   node_pointer;
+	typedef tree_base<T, Allocator>                  base_;
+	typedef typename base_::node                     node;
+	typedef typename base_::node_pointer             node_pointer;
 
 public:
-	typedef typename base_::value_type     value_type;
-	typedef Compare                        value_compare;
-	typedef Allocator                      allocator_type;
-	typedef typename base_::node_allocator node_allocator;
-	typedef tree_iterator<T>               iterator;
+	typedef T                                        value_type;
+	typedef Compare                                  value_compare;
+	typedef Allocator                                allocator_type;
+	typedef typename base_::node_allocator           node_allocator;
+	typedef tree_iterator<value_type>                iterator;
+	typedef typename allocator_type::pointer         pointer;
+	typedef typename allocator_type::const_pointer   const_pointer;
+	typedef typename allocator_type::difference_type difference_type;
+	typedef typename allocator_type::size_type       size_type;
+
+private:
+	typedef typename select_first<value_type>::type  key_type;
 	// clang-format on
 
 	tree();
