@@ -5,6 +5,54 @@ namespace ft
 {
 
 template<class NodePtr>
+NodePtr tree_min_node(NodePtr x)
+{
+	while (x != 0 && x->left != 0)
+		x = x->left;
+	return (x);
+}
+
+template<class NodePtr>
+NodePtr tree_max_node(NodePtr x)
+{
+	while (x != 0 && x->right != 0)
+		x = x->right;
+	return (x);
+}
+
+template<class NodePtr>
+NodePtr tree_next_node(NodePtr x)
+{
+	if (x->right != 0)
+		return tree_min_node(x->right);
+
+	NodePtr parent = x->parent;
+
+	while (parent != 0 && parent->right == x)
+	{
+		x = parent;
+		parent = x->parent;
+	}
+	return (parent);
+}
+
+template<class NodePtr>
+NodePtr tree_prev_node(NodePtr x)
+{
+	if (x->left != 0)
+		return tree_max_node(x->right);
+
+	NodePtr parent = x->parent;
+
+	while (parent != 0 && parent->left == x)
+	{
+		x = parent;
+		parent = x->parent;
+	}
+	return (parent);
+}
+
+template<class NodePtr>
 void tree_insert(NodePtr root, NodePtr x)
 {
 	NodePtr parent = 0;
@@ -29,22 +77,6 @@ void tree_insert(NodePtr root, NodePtr x)
 		parent->left = x;
 	else
 		parent->right = x;
-}
-
-template<class NodePtr>
-NodePtr tree_min_node(NodePtr x)
-{
-	while (x != 0 && x->left != 0)
-		x = x->left;
-	return (x);
-}
-
-template<class NodePtr>
-NodePtr tree_max_node(NodePtr x)
-{
-	while (x != 0 && x->right != 0)
-		x = x->right;
-	return (x);
 }
 
 template<class NodePtr>
