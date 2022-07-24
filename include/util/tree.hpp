@@ -376,19 +376,22 @@ tree<T, Compare, Allocator>::tree() : base_()
 
 template<class T, class Compare, class Allocator>
 tree<T, Compare, Allocator>::tree(const tree &other) : base_(other)
-{}
+{
+	// copy
+}
 
 template<class T, class Compare, class Allocator>
 tree<T, Compare, Allocator> &tree<T, Compare, Allocator>::operator=(const tree &rhs)
 {
-	// TODO: clear, copy
+	// TODO: copy
+	clear();
 	return (*this);
 }
 
 template<class T, class Compare, class Allocator>
 tree<T, Compare, Allocator>::~tree()
 {
-	// clear()
+	destroy(root());
 }
 
 // capaity
@@ -409,6 +412,60 @@ template<class T, class Compare, class Allocator>
 typename tree<T, Compare, Allocator>::size_type tree<T, Compare, Allocator>::max_size() const
 {
 	return (this->node_alloc_.max_size());
+}
+
+// modifier
+
+template<class T, class Compare, class Allocator>
+void tree<T, Compare, Allocator>::clear()
+{
+	destroy(root());
+	root() = 0;
+	size_ = 0;
+	this->begin_node_ = this->end_node_;
+}
+
+// private function
+
+template<class T, class Compare, class Allocator>
+typename tree<T, Compare, Allocator>::node_pointer &tree<T, Compare, Allocator>::root() const
+{
+	return (this->end_node_->left);
+}
+
+template<class T, class Compare, class Allocator>
+typename tree<T, Compare, Allocator>::node_pointer
+tree<T, Compare, Allocator>::create_node(const value_type &val)
+{
+	node_pointer new_node = this->allocate_one_();
+
+	try
+	{
+		this->node_alloc_.construct(new_node, node(val));
+	}
+	catch (...)
+	{
+		this->deallocate_one_(new_node);
+	}
+	return (new_node);
+}
+
+template<class T, class Compare, class Allocator>
+void tree<T, Compare, Allocator>::destroy_node(node_pointer x)
+{
+	this->node_alloc_.destroy(x);
+	this->deallocate_one_(x);
+}
+
+template<class T, class Compare, class Allocator>
+void tree<T, Compare, Allocator>::destroy(node_pointer x)
+{
+	if (x != 0)
+	{
+		destroy(x->left);
+		destroy(x->right);
+		destroy_node(x);
+	}
 }
 
 } // namespace ft
