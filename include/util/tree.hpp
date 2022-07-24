@@ -391,6 +391,26 @@ tree<T, Compare, Allocator>::~tree()
 	// clear()
 }
 
+// capaity
+
+template<class T, class Compare, class Allocator>
+bool tree<T, Compare, Allocator>::empty() const
+{
+	return (size() == 0);
+}
+
+template<class T, class Compare, class Allocator>
+typename tree<T, Compare, Allocator>::size_type tree<T, Compare, Allocator>::size() const
+{
+	return (size_);
+}
+
+template<class T, class Compare, class Allocator>
+typename tree<T, Compare, Allocator>::size_type tree<T, Compare, Allocator>::max_size() const
+{
+	return (this->node_alloc_.max_size());
+}
+
 } // namespace ft
 
 #endif // !TREE_HPP
