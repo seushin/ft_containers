@@ -158,17 +158,70 @@ struct tree_iterator
 struct tree_const_iterator
 {};
 
-template<class T, class Compare, class Allocator>
-class tree
+// for management base node memory
+template<class T, class Allocator>
+class tree_base
 {
 public:
 	// clang-format off
-	typedef T         value_type;
-	typedef Compare   value_compare;
-	typedef Allocator allocator_type;
+	typedef tree_node<T>                                          node;
+	typedef node*                                                 node_pointer;
+	typedef typename node::value_type                             value_type;
+	typedef Allocator                                             allocator_type;
+	typedef typename allocator_type::template rebind<node>::other node_allocator;
+	// clang-format on
 
-	typedef tree_node<T> node;
-	typedef node         *node_pointer;
+	tree_base() : node_alloc_()
+	{
+		begin_node_ = end_node_ = allocate_one_();
+	}
+	tree_base(const allocator_type &alloc) : node_alloc_(alloc)
+	{
+		begin_node_ = end_node_ = allocate_one_();
+	}
+	tree_base(const tree_base &x) : node_alloc_(x.node_alloc_) {}
+
+	tree_base &operator=(const tree_base &rhs)
+	{
+		return (*this);
+	}
+
+	~tree_base()
+	{
+		deallocate_one_(end_node_);
+	}
+
+	node_pointer allocate_one_()
+	{
+		return (node_alloc_.allocate(1));
+	}
+
+	void deallocate_one_(node_pointer p)
+	{
+		node_alloc_.deallocate(p, 1);
+	}
+
+protected:
+	node_allocator node_alloc_;
+	node_pointer begin_node_;
+	node_pointer end_node_;
+};
+
+template<class T, class Compare, class Allocator>
+class tree : protected tree_base<T, Allocator>
+{
+private:
+	// clang-format off
+	typedef tree_base<T, Allocator>        base_;
+	typedef typename base_::node           node;
+	typedef typename base_::node_pointer   node_pointer;
+
+public:
+	typedef typename base_::value_type     value_type;
+	typedef Compare                        value_compare;
+	typedef Allocator                      allocator_type;
+	typedef typename base_::node_allocator node_allocator;
+	typedef tree_iterator<T>               iterator;
 	// clang-format on
 
 	tree();
@@ -176,17 +229,56 @@ public:
 	tree &operator=(const tree &rhs);
 	~tree();
 
-private:
-	node base_;
-
-	node_pointer root() const
+protected:
+	node_pointer &root() const
 	{
-		return (base_.left);
+		return (this->end_node_->left);
+	}
+
+	node_pointer create_node(const value_type &val)
+	{
+		node_pointer new_node = this->allocate_one_();
+
+		try
+		{
+			this->node_alloc_.construct(new_node, node(val));
+		}
+		catch (...)
+		{
+			this->deallocate_one_(new_node);
+		}
+		return (new_node);
+	}
+
+	void destroy_node(node_pointer x)
+	{
+		this->node_alloc_.destroy(x);
+		this->deallocate_one_(x);
 	}
 };
 
 template<class T, class Compare, class Allocator>
-tree<T, Compare, Allocator>::tree() : base_() {}
+tree<T, Compare, Allocator>::tree() : base_()
+{
+	root() = 0;
+}
+
+template<class T, class Compare, class Allocator>
+tree<T, Compare, Allocator>::tree(const tree &other) : base_(other)
+{}
+
+template<class T, class Compare, class Allocator>
+tree<T, Compare, Allocator> &tree<T, Compare, Allocator>::operator=(const tree &rhs)
+{
+	// TODO: clear, copy
+	return (*this);
+}
+
+template<class T, class Compare, class Allocator>
+tree<T, Compare, Allocator>::~tree()
+{
+	// clear()
+}
 
 } // namespace ft
 
