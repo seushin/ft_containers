@@ -83,22 +83,37 @@ void tree_remove(NodePtr root, NodePtr x)
 	}
 }
 
-template<class T>
-struct tree_node
+struct tree_node_base
 {
-	tree_node *parent;
-	tree_node *left;
-	tree_node *right;
-	T value;
+	tree_node_base *parent;
+	tree_node_base *left;
+	tree_node_base *right;
 
-	tree_node() : parent(0), left(0), right(0), value() {}
-	tree_node(const T &val) : parent(0), left(0), right(0), value(val) {}
-	tree_node(const tree_node &x) : parent(x.parent), left(x.left), right(x.right), value(x.value) {}
-	tree_node &operator=(const tree_node &rhs)
+	tree_node_base() : parent(0), left(0), right(0) {}
+	tree_node_base(const tree_node_base &x) : parent(x.parent), left(x.left), right(x.right) {}
+	tree_node_base &operator=(const tree_node_base &rhs)
 	{
 		parent = rhs.parent;
 		left = rhs.left;
 		right = rhs.right;
+		return (*this);
+	}
+	~tree_node_base() {}
+};
+
+template<class T>
+struct tree_node : public tree_node_base
+{
+	typedef T value_type;
+
+	value_type value;
+
+	tree_node() : tree_node_base(), value() {}
+	tree_node(const value_type &val) : tree_node_base(), value(val) {}
+	tree_node(const tree_node &x) : tree_node_base(x), value(x.value) {}
+	tree_node &operator=(const tree_node &rhs)
+	{
+		tree_node_base::operator=(rhs);
 		value = rhs.value;
 		return (*this);
 	}
