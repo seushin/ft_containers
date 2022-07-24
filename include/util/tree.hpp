@@ -1,6 +1,9 @@
 #ifndef TREE_HPP
 #define TREE_HPP
 
+#include "iterator/category.hpp"
+#include <cstddef>
+
 namespace ft
 {
 
@@ -152,11 +155,88 @@ struct tree_node : public tree_node_base
 	~tree_node();
 };
 
-struct tree_iterator
-{};
+template<class T, class DiffType = std::ptrdiff_t>
+class tree_iterator
+{
+public:
+	// clang-format off
+	typedef bidirectional_iterator_tag iterator_category;
+	typedef T                          value_type;
+	typedef DiffType                   difference_type;
+	typedef value_type&                reference;
+	typedef value_type*                pointer;
 
-struct tree_const_iterator
-{};
+private:
+	typedef tree_node_base*            node_base_pointer;
+	typedef tree_node<T>*              node_pointer;
+	// clang-format on
+
+	node_base_pointer iter_;
+
+public:
+	tree_iterator() : iter_(0) {}
+	tree_iterator(const node_pointer p) : iter_(p) {}
+	tree_iterator(const tree_iterator &x) : iter_(x.iter_) {}
+	tree_iterator &operator=(const tree_iterator &rhs)
+	{
+		iter_ = rhs.iter_;
+		return (*this);
+	}
+	~tree_iterator() {}
+
+	value_type operator*() const
+	{
+		return (static_cast<node_pointer>(iter_)->value);
+	}
+
+	pointer operator->() const
+	{
+		return (&(operator*()));
+	}
+
+	tree_iterator &operator++()
+	{
+		iter_ = tree_next_node(iter_);
+		return (*this);
+	}
+
+	tree_iterator operator++(int)
+	{
+		tree_iterator copy(*this);
+
+		++(*this);
+		return (copy);
+	}
+
+	tree_iterator &operator--()
+	{
+		iter_ = tree_prev_node(iter_);
+		return (*this);
+	}
+
+	tree_iterator operator--(int)
+	{
+		tree_iterator copy(*this);
+
+		--(*this);
+		return (copy);
+	}
+
+	friend bool operator==(const tree_iterator &lhs, const tree_iterator &rhs)
+	{
+		return (lhs.iter_ == rhs.iter_);
+	}
+
+	friend bool operator!=(const tree_iterator &lhs, const tree_iterator &rhs)
+	{
+		return (!(lhs == rhs));
+	}
+};
+
+class tree_const_iterator
+{
+	// TODO
+};
 
 // for management base node memory
 template<class T, class Allocator>
